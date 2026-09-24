@@ -1,184 +1,548 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+/* =====================================
+   1. GENERAL STYLES
+===================================== */
+
+* {
+  box-sizing: border-box;
 }
 
-.hero {
-  position: relative;
+body {
+  margin: 0;
 
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
+  font-family: Arial, Helvetica, sans-serif;
 
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+  background: #fff5fa;
+  color: #282037;
 }
 
-#center {
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+/* =====================================
+   2. MAIN PAGE LAYOUT
+===================================== */
+
+.auth-shell {
+  display: flex;
+
+  min-height: 100vh;
+  width: 100%;
+}
+
+
+/* =====================================
+   3. LEFT SIDE - TEAM PHOTO
+===================================== */
+
+.auth-hero {
+  width: 50%;
+
+  padding: 45px 55px;
+
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
+  justify-content: space-between;
 
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
+  /* Team photo background */
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
+  color: white;
 
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
   position: relative;
+  overflow: hidden;
+}
+
+
+/* =====================================
+   4. BRAND / LOGO
+===================================== */
+
+.brand {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  font-size: 25px;
+  font-weight: bold;
+
+  position: relative;
+  z-index: 1;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  background: white;
+  color: #bb69a5;
+
+  border-radius: 12px;
+}
+
+
+/* =====================================
+   5. LEFT SIDE HEADING
+===================================== */
+
+.hero-content {
+  width: 100%;
+  max-width: 510px;
+
+  margin: 55px auto;
+
+  position: relative;
+  z-index: 1;
+}
+
+.hero-tag {
+  font-size: 12px;
+  letter-spacing: 3px;
+
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+.hero-content h2 {
+  margin: 20px 0;
+
+  font-size: clamp(36px, 4vw, 55px);
+
+  line-height: 1.15;
+}
+
+.hero-description {
+  font-size: 16px;
+  line-height: 1.8;
+
+  opacity: 0.95;
+}
+
+
+/* =====================================
+   6. PROJECT OVERVIEW CARD
+===================================== */
+
+.preview-card {
+  margin-top: 45px;
+
+  padding: 26px;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.95);
+
+  color: #332640;
+
+  box-shadow:
+    0 20px 55px rgba(60, 31, 72, 0.16);
+}
+
+.preview-header,
+.preview-row {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-header {
+  margin-bottom: 28px;
+}
+
+.preview-header span {
+  color: #25a77f;
+  font-size: 12px;
+}
+
+.preview-row {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+
+/* =====================================
+   7. PROJECT PROGRESS BAR
+===================================== */
+
+.progress-track {
+  height: 10px;
+
+  background: #f0e7f1;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 75%;
+  height: 100%;
+
+  background: #d96ca8;
+
+  border-radius: 20px;
+}
+
+
+/* =====================================
+   8. TASK STATISTICS
+===================================== */
+
+.preview-stats {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 12px;
+  margin-top: 27px;
+}
+
+.preview-stats div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.preview-stats strong {
+  font-size: 24px;
+}
+
+.preview-stats small {
+  font-size: 11px;
+  color: #81768b;
+}
+
+.hero-footer {
+  font-size: 12px;
+
+  opacity: 0.85;
+
+  position: relative;
+  z-index: 1;
+}
+
+
+/* =====================================
+   9. RIGHT SIDE - FORM PANEL
+===================================== */
+
+.auth-panel {
+  width: 50%;
+
+  padding: 35px 55px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+}
+
+
+/* =====================================
+   10. LOGIN / REGISTER NAVIGATION
+===================================== */
+
+.auth-nav {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 30px;
+}
+
+.auth-nav button {
+  border: none;
+
+  background: transparent;
+
+  padding: 10px 0;
+
+  font-size: 14px;
+
+  color: #847c8a;
+}
+
+.auth-nav button.active {
+  color: #ca579b;
+
+  font-weight: bold;
+
+  border-bottom: 2px solid #ca579b;
+}
+
+
+/* =====================================
+   11. LOGIN / REGISTER FORM
+===================================== */
+
+.form-container {
   width: 100%;
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+  max-width: 400px;
+
+  margin: auto;
+
+  padding: 35px 0;
+}
+
+.eyebrow {
+  color: #c65a9d;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  letter-spacing: 2px;
+}
+
+.form-container h1 {
+  font-size: 34px;
+
+  margin: 12px 0;
+}
+
+.subtitle {
+  color: #857e8b;
+
+  line-height: 1.6;
+
+  font-size: 14px;
+
+  margin-bottom: 30px;
+}
+
+
+/* =====================================
+   12. INPUT FIELDS
+===================================== */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  margin-bottom: 19px;
+}
+
+.form-group label {
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+
+  padding: 14px 15px;
+
+  border: 1px solid #eadde8;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #fffafd;
+
+  color: #302339;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #c963a1;
+
+  box-shadow:
+    0 0 0 3px rgba(201, 99, 161, 0.12);
+}
+
+
+/* =====================================
+   13. SIGN IN / REGISTER BUTTON
+===================================== */
+
+.primary-button {
+  width: 100%;
+
+  margin-top: 10px;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  color: white;
+
+  background: #cf65a6;
+
+  font-weight: bold;
+
+  transition: background 0.2s ease;
+}
+
+.primary-button:hover {
+  background: #b74b8d;
+}
+
+.primary-button:focus-visible,
+.text-link:focus-visible,
+.auth-nav button:focus-visible {
+  outline: 3px solid #765baf;
+  outline-offset: 3px;
+}
+
+
+/* =====================================
+   14. REGISTER LINK
+===================================== */
+
+.switch-text {
+  text-align: center;
+
+  font-size: 13px;
+
+  color: #81768a;
+
+  margin-top: 25px;
+}
+
+.text-link {
+  border: none;
+
+  background: transparent;
+
+  padding: 0;
+
+  color: #c45799;
+
+  font-weight: bold;
+}
+
+
+/* =====================================
+   15. ERROR / SUCCESS MESSAGE
+===================================== */
+
+.form-message {
+  color: #a33170;
+
+  background: #fff0f7;
+
+  padding: 13px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================
+   16. TEMPORARY DASHBOARD
+===================================== */
+
+.dashboard-page {
+  min-height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  padding: 25px;
+
+  background: #fff1f8;
+}
+
+.dashboard-card {
+  background: white;
+
+  padding: 45px;
+
+  border-radius: 18px;
+
+  width: 100%;
+  max-width: 500px;
+
+  box-shadow:
+    0 12px 40px rgba(95, 42, 76, 0.09);
+}
+
+.dashboard-card h1 {
+  font-size: 28px;
+}
+
+
+/* =====================================
+   17. MOBILE RESPONSIVENESS
+===================================== */
+
+@media (max-width: 850px) {
+
+  .auth-shell {
+    flex-direction: column;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .auth-hero {
+    width: 100%;
+
+    min-height: 280px;
+
+    padding: 25px;
+
+    background-position: center 30%;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  .hero-content {
+    margin: 30px 0;
+  }
+
+  .hero-content h2 {
+    font-size: 33px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+  }
+
+  .preview-card,
+  .hero-footer {
+    display: none;
+  }
+
+  .auth-panel {
+    width: 100%;
+
+    padding: 25px;
+  }
+
+  .form-container {
+    max-width: 450px;
+
+    padding: 35px 0;
+  }
+
+  .form-container h1 {
+    font-size: 29px;
   }
 }
