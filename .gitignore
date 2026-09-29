@@ -1,0 +1,4 @@
+# Docker Compose secrets and machine-specific settings (see .env.example)
+.env
+.env.*
+!.env.example
