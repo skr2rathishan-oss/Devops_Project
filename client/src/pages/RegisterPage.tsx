@@ -1,42 +1,43 @@
 
 import { useState, type FormEvent } from "react";
-
-export type Registration = {
-  fullname: string;
-  userId: string;
-  password: string;
-  email: string;
-  role: "Member" | "Team Leader";
-};
+import type { RegisterValues, SelfRegisterRole } from "../types";
 
 type RegisterPageProps = {
-  onRegister: (account: Registration) => void;
+  onRegister: (account: RegisterValues) => Promise<void>;
   onGoLogin: () => void;
+  message: string;
 };
 
 export default function RegisterPage({
   onRegister,
   onGoLogin,
+  message,
 }: RegisterPageProps) {
 
   const [fullname, setFullname] = useState("");
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const [role, setRole] =
-    useState<Registration["role"]>("Member");
+    useState<SelfRegisterRole>("team_member");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    onRegister({
-      fullname: fullname.trim(),
-      userId: userId.trim(),
-      password,
-      email: email.trim(),
-      role,
-    });
+    setSubmitting(true);
+    try {
+      await onRegister({
+        name: fullname.trim(),
+        username: userId.trim(),
+        password,
+        email: email.trim(),
+        role,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -84,6 +85,8 @@ export default function RegisterPage({
               setUserId(event.target.value)
             }
             autoComplete="username"
+            pattern="[A-Za-z0-9_.\-]{3,50}"
+            title="3-50 characters: letters, numbers, _ . -"
             required
           />
         </div>
@@ -135,17 +138,27 @@ export default function RegisterPage({
             value={role}
             onChange={(event) =>
               setRole(
-                event.target.value as Registration["role"]
+                event.target.value as SelfRegisterRole
               )
             }
           >
-            <option value="Member">Team Member</option>
-            <option value="Team Leader">Team Leader</option>
+            <option value="team_member">Team Member</option>
+            <option value="team_leader">Team Leader</option>
           </select>
         </div>
 
-        <button type="submit" className="primary-button">
-          Create Account
+        {message && (
+          <p className="form-message" role="alert">
+            {message}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          className="primary-button"
+          disabled={submitting}
+        >
+          {submitting ? "Creating Account…" : "Create Account"}
         </button>
 
       </form>

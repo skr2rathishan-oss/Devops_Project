@@ -4,6 +4,8 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-
 import AuthLayout from "../components/AuthLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../context/AuthContext";
+import { register, getAuthErrorMessage } from "../services/authService";
+import type { RegisterValues } from "../types";
 
 import LoginPage from "../pages/loginPage";
 import RegisterPage from "../pages/RegisterPage";
@@ -28,11 +30,12 @@ function LoginRoute() {
   const notice = (location.state as { message?: string } | null)?.message ?? "";
 
   async function handleLogin(identifier: string, password: string) {
+    setError("");
     try {
       await login(identifier.trim(), password);
       navigate("/dashboard", { replace: true });
-    } catch {
-      setError("Incorrect email or password.");
+    } catch (err) {
+      setError(getAuthErrorMessage(err, "Incorrect email/User ID or password."));
     }
   }
 
@@ -46,17 +49,31 @@ function LoginRoute() {
 }
 
 function RegisterRoute() {
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  async function handleRegister(values: RegisterValues) {
+    setError("");
+    try {
+      await register(values);
+      navigate("/login", {
+        state: { message: "Registration successful! Please sign in." },
+      });
+    } catch (err) {
+      setError(getAuthErrorMessage(err, "Could not create your account. Please try again."));
+    }
+  }
 
   return (
     <RegisterPage
-      // TODO: call the server's register endpoint once authService exposes one.
-      onRegister={() =>
-        navigate("/login", {
-          state: { message: "Registration successful! Please sign in." },
-        })
-      }
+      onRegister={handleRegister}
       onGoLogin={() => navigate("/login")}
+      message={error}
     />
   );
 }

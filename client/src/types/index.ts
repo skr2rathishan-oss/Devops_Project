@@ -11,6 +11,7 @@ export interface Team {
 export interface User {
   id: number;
   name: string;
+  username: string;
   email: string;
   role: Role;
   teamId: number | null;
@@ -32,6 +33,17 @@ export interface Task {
 export interface AuthResponse {
   token: string;
   user: User;
+}
+
+// Roles a user can pick for themselves on the register page.
+export type SelfRegisterRole = Exclude<Role, 'admin'>;
+
+export interface RegisterValues {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  role: SelfRegisterRole;
 }
 
 export interface TaskFormValues {
