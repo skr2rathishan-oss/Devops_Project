@@ -1,6 +1,8 @@
--- Schema for login and register.
--- Run against an existing database, e.g.:
+-- STEP 2 of 3 - schema for login and register.
+-- Run after setup_local.sql, in MySQL Workbench or with:
 --   mysql -u app_user -p app_db < database/init.sql
+
+USE app_db;
 
 SET NAMES utf8mb4;
 
