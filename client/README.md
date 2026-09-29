@@ -1,32 +1,48 @@
-# React + TypeScript + Vite
+# TeamSpace — Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + TypeScript + Vite front end for the team task management system.
 
-Currently, two official plugins are available:
+## Getting started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+cd client
+npm install
+cp .env.example .env   # then set VITE_API_BASE_URL if the server is not on localhost:5000
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The app runs at http://localhost:5173 and talks to the server API at `VITE_API_BASE_URL`
+(default `http://localhost:5000/api`).
+
+## Scripts
+
+| Command           | What it does                              |
+| ----------------- | ----------------------------------------- |
+| `npm run dev`     | Start the dev server with hot reload      |
+| `npm run build`   | Type-check and build for production (`dist/`) |
+| `npm run preview` | Serve the production build locally        |
+| `npm run lint`    | Lint the source with oxlint               |
+
+## Routes
+
+| Path        | Access                  |
+| ----------- | ----------------------- |
+| `/login`    | Public                  |
+| `/register` | Public                  |
+| `/dashboard`| Any signed-in user      |
+| `/tasks`    | Admin, Team Leader      |
+| `/my-tasks` | Team Member             |
+| `/users`    | Admin                   |
+| `/teams`    | Admin                   |
+
+## Project structure
+
+```
+src/
+  components/   Shared UI (layouts, navbar, sidebar, route guard, task card/form)
+  context/      AuthContext — current user and login/logout
+  pages/        One component per route
+  routes/       AppRoutes — all route definitions
+  services/     Axios API client and per-resource API calls
+  types/        Shared TypeScript types
+```
