@@ -3,25 +3,13 @@ const AppError = require("../utils/AppError");
 const userModel = require("../models/user.model");
 const { signAuthToken, generateResetToken, hashResetToken } = require("../utils/token");
 const { sendResetPasswordEmail } = require("../config/mailer");
+const { toPublicUser } = require("../utils/serializers");
+const { EMAIL_PATTERN, MIN_PASSWORD_LENGTH } = require("../utils/validators");
 
 const SALT_ROUNDS = 10;
-const MIN_PASSWORD_LENGTH = 8;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_PATTERN = /^[A-Za-z0-9_.-]{3,50}$/;
 // Admins can't self-register; they are created by another admin or seeded.
 const SELF_REGISTER_ROLES = ["team_member", "team_leader"];
-
-// The shape the client stores as `User` — never includes the password hash.
-function toPublicUser(user) {
-  return {
-    id: user.id,
-    name: user.name,
-    username: user.username,
-    email: user.email,
-    role: user.role,
-    teamId: user.team_id,
-  };
-}
 
 async function register(req, res, next) {
   try {
@@ -151,4 +139,13 @@ async function resetPassword(req, res, next) {
   }
 }
 
-module.exports = { register, login, forgotPassword, resetPassword };
+// req.user is set by the protect middleware.
+async function me(req, res, next) {
+  try {
+    res.status(200).json({ success: true, user: toPublicUser(req.user) });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { register, login, forgotPassword, resetPassword, me };
