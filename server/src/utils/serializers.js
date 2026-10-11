@@ -10,4 +10,8 @@ function toPublicUser(user) {
   };
 }
 
-module.exports = { toPublicUser };
+function toTeam(team) {
+  return { id: team.id, name: team.name };
+}
+
+module.exports = { toPublicUser, toTeam };

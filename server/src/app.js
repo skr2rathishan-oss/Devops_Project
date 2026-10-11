@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
+const teamRoutes = require("./routes/team.routes");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 app.get("/health", (req, res) => res.status(200).json({ success: true, status: "ok" }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/teams", teamRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
