@@ -24,10 +24,24 @@ async function findById(id) {
   return rows[0] || null;
 }
 
-async function create({ name, username, email, passwordHash, role }) {
+async function findAll() {
+  const [rows] = await pool.query("SELECT * FROM users ORDER BY name, id");
+  return rows;
+}
+
+// A team leader sees their team plus themselves; a NULL team_id only matches the leader's own row.
+async function findByTeamOrId(teamId, userId) {
+  const [rows] = await pool.query(
+    "SELECT * FROM users WHERE team_id = ? OR id = ? ORDER BY name, id",
+    [teamId, userId]
+  );
+  return rows;
+}
+
+async function create({ name, username, email, passwordHash, role, teamId = null }) {
   const [result] = await pool.query(
-    "INSERT INTO users (name, username, email, password, role) VALUES (?, ?, ?, ?, ?)",
-    [name, username, email, passwordHash, role]
+    "INSERT INTO users (name, username, email, password, role, team_id) VALUES (?, ?, ?, ?, ?, ?)",
+    [name, username, email, passwordHash, role, teamId]
   );
   return findById(result.insertId);
 }
@@ -59,6 +73,8 @@ module.exports = {
   findByUsername,
   findByEmailOrUsername,
   findById,
+  findAll,
+  findByTeamOrId,
   create,
   setResetToken,
   findByResetTokenHash,
