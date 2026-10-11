@@ -14,4 +14,20 @@ function toTeam(team) {
   return { id: team.id, name: team.name };
 }
 
-module.exports = { toPublicUser, toTeam };
+// The shape the client uses as `Task`.
+function toTask(task) {
+  return {
+    id: task.id,
+    title: task.title,
+    description: task.description ?? "",
+    status: task.status,
+    priority: task.priority,
+    assignedTo: task.assigned_to,
+    assignedToName: task.assigned_to_name ?? undefined,
+    createdBy: task.created_by,
+    dueDate: task.due_date, // already 'YYYY-MM-DD' (DATE_FORMAT) or null
+    createdAt: task.created_at,
+  };
+}
+
+module.exports = { toPublicUser, toTeam, toTask };

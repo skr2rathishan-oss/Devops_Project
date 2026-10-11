@@ -10,10 +10,14 @@ Connect as `root` (the **Local instance MySQL80** connection), then for each fil
 | Order | File | What it does |
 |---|---|---|
 | 1 | `setup_local.sql` | Creates the `app_db` database and the `app_user` login |
-| 2 | `init.sql` | Creates the `teams` and `users` tables |
-| 3 | `seed.sql` | Optional: adds test accounts |
+| 2 | `init.sql` | Creates the `teams`, `users` and `tasks` tables |
+| 3 | `seed.sql` | Optional: adds test accounts and sample tasks |
 
 Click the refresh icon in the **Schemas** panel to see `app_db`.
+
+`init.sql` is safe to re-run: on an existing database it only adds the tables that are missing
+(e.g. `tasks`). With Docker, the scripts in `database/` only run when the `mysql_data` volume is
+empty, so either run `docker compose down -v` (this wipes all data) or run `init.sql` manually.
 
 ## 3. Configure and check the server
 `server/.env` must have `DB_USER=app_user`, `DB_PASSWORD=app_password`, `DB_NAME=app_db`
@@ -44,7 +48,11 @@ Password for all: `Test@1234`. Log in with either the email or the User ID.
 ```sql
 USE app_db;
 SELECT id, name, username, email, role, team_id, created_at FROM users;
+SELECT id, title, status, assigned_to, created_by FROM tasks;
 DELETE FROM users WHERE email = 'someone@test.com';   -- remove a test signup
 ```
+
+A user who created tasks can't be deleted until those tasks are deleted (`created_by` is `ON DELETE RESTRICT`).
+Deleting a user who is only assigned tasks leaves those tasks unassigned.
 
 To start over: `DROP DATABASE app_db;`, then run steps 1 to 3 again.

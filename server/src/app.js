@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const teamRoutes = require("./routes/team.routes");
 const userRoutes = require("./routes/user.routes");
+const taskRoutes = require("./routes/task.routes");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
@@ -15,6 +16,7 @@ app.get("/health", (req, res) => res.status(200).json({ success: true, status: "
 app.use("/api/auth", authRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

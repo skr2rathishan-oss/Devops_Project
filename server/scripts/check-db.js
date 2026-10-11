@@ -8,9 +8,11 @@ const pool = require("../src/config/db");
     const [[{ db }]] = await pool.query("SELECT DATABASE() AS db");
     const [tables] = await pool.query("SHOW TABLES");
     const [[{ users }]] = await pool.query("SELECT COUNT(*) AS users FROM users");
+    const [[{ tasks }]] = await pool.query("SELECT COUNT(*) AS tasks FROM tasks");
     console.log(`Connected to "${db}" as ${process.env.DB_USER}@${process.env.DB_HOST}:${process.env.DB_PORT}`);
     console.log(`Tables: ${tables.map((t) => Object.values(t)[0]).join(", ")}`);
     console.log(`Users in table: ${users}`);
+    console.log(`Tasks in table: ${tasks}`);
   } catch (err) {
     const hints = {
       ECONNREFUSED: "MySQL isn't running on that host/port. Start the MySQL80 service.",
