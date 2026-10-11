@@ -44,6 +44,13 @@ async function createUser(req, res, next) {
     if (!name || !email || !password) {
       throw new AppError("name, email and password are required", 400);
     }
+    // Match the VARCHAR sizes in database/init.sql so MySQL never rejects the insert.
+    if (name.length > 100) {
+      throw new AppError("Name must be at most 100 characters", 400);
+    }
+    if (email.length > 255) {
+      throw new AppError("Email must be at most 255 characters", 400);
+    }
     if (!EMAIL_PATTERN.test(email)) {
       throw new AppError("Please enter a valid email address", 400);
     }

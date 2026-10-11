@@ -8,6 +8,8 @@ const { parseId, parseOptionalId, parseOptionalDate } = require("../utils/valida
 const TASK_STATUSES = ["pending", "in_progress", "completed"];
 const TASK_PRIORITIES = ["low", "medium", "high"];
 const MAX_TITLE_LENGTH = 200;
+// Well under the TEXT column's 65,535-byte limit even with 4-byte utf8mb4 characters.
+const MAX_DESCRIPTION_LENGTH = 5000;
 const STATUS_MESSAGE = "Status must be pending, in_progress or completed";
 
 const CREATE_DEFAULTS = {
@@ -37,6 +39,9 @@ function readTaskFields(body, current) {
   if (!fields.title) throw new AppError("Title is required", 400);
   if (fields.title.length > MAX_TITLE_LENGTH) {
     throw new AppError(`Title must be at most ${MAX_TITLE_LENGTH} characters`, 400);
+  }
+  if (fields.description.length > MAX_DESCRIPTION_LENGTH) {
+    throw new AppError(`Description must be at most ${MAX_DESCRIPTION_LENGTH} characters`, 400);
   }
   if (!TASK_STATUSES.includes(fields.status)) throw new AppError(STATUS_MESSAGE, 400);
   if (!TASK_PRIORITIES.includes(fields.priority)) {
@@ -144,6 +149,8 @@ async function updateTask(req, res, next) {
       if (!TASK_STATUSES.includes(body.status)) throw new AppError(STATUS_MESSAGE, 400);
 
       const updated = await taskModel.updateStatus(id, body.status);
+      // A concurrent delete can remove the task between the check above and the re-read.
+      if (!updated) throw new AppError("Task not found", 404);
       return res.status(200).json(toTask(updated));
     }
 
@@ -161,6 +168,7 @@ async function updateTask(req, res, next) {
     } catch (err) {
       rethrowMissingAssignee(err);
     }
+    if (!updated) throw new AppError("Task not found", 404);
 
     res.status(200).json(toTask(updated));
   } catch (err) {
