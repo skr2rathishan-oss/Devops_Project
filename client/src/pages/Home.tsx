@@ -93,7 +93,7 @@ function Home() {
             className="progress-circle"
             style={{
               background: `conic-gradient(
-                #4f46e5 ${progress * 3.6}deg,
+                #eb5d39 ${progress * 3.6}deg,
                 #e9edf5 0deg
               )`,
             }}
