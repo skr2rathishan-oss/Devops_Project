@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { register, getAuthErrorMessage } from "../services/authService";
 import type { RegisterValues } from "../types";
 
-import LoginPage from "../pages/loginPage";
+import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/RegisterPage";
 import Dashboard from "../pages/Dashboard";
 import Tasks from "../pages/Tasks";
@@ -107,7 +107,7 @@ function AppRoutes() {
       <Route
         path="/my-tasks"
         element={
-          <ProtectedRoute allowedRoles={["team_member"]}>
+          <ProtectedRoute>
             <MyTasks />
           </ProtectedRoute>
         }
@@ -129,7 +129,7 @@ function AppRoutes() {
         }
       />
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
