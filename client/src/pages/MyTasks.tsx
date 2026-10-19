@@ -174,7 +174,7 @@ function MyTasks() {
           className="mytasks-progress-circle"
           style={{
             background: `conic-gradient(
-              #4f46e5 ${progress}%,
+              #e98b26 ${progress}%,
               #e5e7eb ${progress}%
             )`,
           }}
