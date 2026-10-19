@@ -14,10 +14,10 @@ function Sidebar() {
           My Tasks
         </NavLink>
 
-        <button className="menu-item">
+        <NavLink to="/calendar" className={({ isActive }) => `menu-item${isActive ? ' active' : ''}`}>
           <span>▣</span>
           Calendar
-        </button>
+        </NavLink>
 
         <button className="menu-item">
           <span>♟</span>

@@ -148,7 +148,7 @@ export default function TaskWorkspace({ personal = false }: {
   </header>
  <nav className="tw-nav" aria-label="Workspace navigation">
   <Link to="/dashboard">Overview</Link>
-  <Link to="/my-tasks" aria-current={personal ? 'page' : undefined}>My tasks</Link>{canAssign && <Link to="/tasks" aria-current={!personal ? 'page' : undefined}>Team tasks</Link>}<button onClick={() => {
+  <Link to="/my-tasks" aria-current={personal ? 'page' : undefined}>My tasks</Link><Link to="/calendar">Calendar</Link>{canAssign && <Link to="/tasks" aria-current={!personal ? 'page' : undefined}>Team tasks</Link>}<button onClick={() => {
       logout();
       navigate('/login');
     }}>Sign out</button>

@@ -87,6 +87,7 @@
 
 .tw-nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 22px;
   border-bottom: 1px solid #242428;
   margin: 22px 0 26px;

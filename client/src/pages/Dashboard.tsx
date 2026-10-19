@@ -21,6 +21,7 @@ export default function Dashboard() {
             <button className="add-task-button">+ Add Task</button>
           </div>
           <Link className="dashboard-my-tasks" to="/my-tasks">✓ My Tasks →</Link>
+          <Link className="dashboard-my-tasks" to="/calendar" style={{ marginLeft: 16 }}>Calendar →</Link>
           <div className="section-heading">
             <div>
               <h2>Development Board</h2>

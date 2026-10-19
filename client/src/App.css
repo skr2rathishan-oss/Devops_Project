@@ -44,7 +44,7 @@ button {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: #4f46e5;
+  background: #e4690b;
   color: white;
   display: flex;
   align-items: center;
@@ -94,7 +94,7 @@ button {
 .quick-add,
 .add-task-button {
   border: none;
-  background: #4f46e5;
+  background: #772d05;
   color: white;
   padding: 11px 18px;
   border-radius: 9px;
@@ -213,7 +213,7 @@ button {
 
 .dashboard-my-tasks {
   display: none;
-  color: #4f46e5;
+  color: #e1623b;
   text-decoration: none;
   font-weight: 600;
 }
@@ -223,7 +223,7 @@ button {
 .project-item:hover,
 .filter-item:hover {
   background: #eef2ff;
-  color: #4f46e5;
+  color: #e5a346;
 }
 
 .menu-item.active {
@@ -259,7 +259,7 @@ button {
   width: 8px;
   height: 8px;
   margin-right: 8px;
-  background: #6366f1;
+  background: #f67206;
   border-radius: 50%;
 }
 
@@ -293,7 +293,7 @@ button {
 }
 
 .small-title {
-  color: #6366f1 !important;
+  color: #ed7b42 !important;
   font-size: 11px !important;
   font-weight: 700;
   letter-spacing: 1px;
@@ -337,7 +337,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4f46e5;
+  color: #eb7b0a;
 }
 
 .overview-card p {
@@ -564,7 +564,7 @@ button {
   width: 100%;
   margin-top: 8px;
   border: none;
-  background: #4f46e5;
+  background: #ed9222;
   color: white;
   padding: 9px;
   border-radius: 7px;
@@ -593,7 +593,7 @@ button {
 .progress-bar {
   height: 100%;
   width: 68%;
-  background: #4f46e5;
+  background: #dc6f3c;
 }
 
 .footer-links {

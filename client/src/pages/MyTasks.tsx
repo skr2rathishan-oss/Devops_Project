@@ -106,6 +106,7 @@ function MyTasks() {
           <span aria-hidden="true">←</span>
           Back to Dashboard
         </Link>
+        <Link className="mytasks-back-link" to="/calendar">Calendar</Link>
       </nav>
 
       <div className="mytasks-header">

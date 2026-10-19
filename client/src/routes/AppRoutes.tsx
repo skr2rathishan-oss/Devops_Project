@@ -10,6 +10,7 @@ import type { RegisterValues } from "../types";
 import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/RegisterPage";
 import Dashboard from "../pages/Dashboard";
+import Calendar from "../pages/Calendar";
 import Tasks from "../pages/Tasks";
 import MyTasks from "../pages/MyTasks";
 import Users from "../pages/Users";
@@ -93,6 +94,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <ProtectedRoute>
+            <Calendar />
           </ProtectedRoute>
         }
       />
