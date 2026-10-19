@@ -1,544 +1,688 @@
-
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-
-  font-family: Arial, Helvetica, sans-serif;
-
-  background: #fff5fa;
-  color: #282037;
-}
-
 button,
 input,
-select {
-  font: inherit;
+textarea {
+  font-family: inherit;
 }
 
 button {
   cursor: pointer;
 }
 
-
-/* =====================================
-   2. MAIN PAGE LAYOUT
-===================================== */
-
-.auth-shell {
-  display: flex;
-
+.app {
   min-height: 100vh;
-  width: 100%;
+  background: #f6f8fc;
+  color: #1e293b;
 }
 
+/* NAVBAR */
 
-/* =====================================
-   3. LEFT SIDE - TEAM PHOTO
-===================================== */
-
-.auth-hero {
-  width: 50%;
-
-  padding: 45px 55px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  /* Team photo background */
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  color: white;
-
-  position: relative;
-  overflow: hidden;
-}
-
-
-/* =====================================
-   4. BRAND / LOGO
-===================================== */
-
-.brand {
+.navbar {
+  height: 72px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
-
-  gap: 12px;
-
-  font-size: 25px;
-  font-weight: bold;
-
-  position: relative;
-  z-index: 1;
+  padding: 0 24px;
+  gap: 30px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
-.brand-icon {
+.brand {
+  width: 230px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #4f46e5;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 40px;
-  height: 40px;
-
-  background: white;
-  color: #bb69a5;
-
-  border-radius: 12px;
+  font-weight: 800;
+  font-size: 20px;
 }
 
-
-/* =====================================
-   5. LEFT SIDE HEADING
-===================================== */
-
-.hero-content {
-  width: 100%;
-  max-width: 510px;
-
-  margin: 55px auto;
-
-  position: relative;
-  z-index: 1;
+.brand h2 {
+  margin: 0;
+  font-size: 18px;
 }
 
-.hero-tag {
-  font-size: 12px;
-  letter-spacing: 3px;
-
-  font-weight: bold;
-  opacity: 0.9;
-}
-
-.hero-content h2 {
-  margin: 20px 0;
-
-  font-size: clamp(36px, 4vw, 55px);
-
-  line-height: 1.15;
-}
-
-.hero-description {
-  font-size: 16px;
-  line-height: 1.8;
-
-  opacity: 0.95;
-}
-
-
-/* =====================================
-   6. PROJECT OVERVIEW CARD
-===================================== */
-
-.preview-card {
-  margin-top: 45px;
-
-  padding: 26px;
-
-  border-radius: 20px;
-
-  background: rgba(255, 255, 255, 0.95);
-
-  color: #332640;
-
-  box-shadow:
-    0 20px 55px rgba(60, 31, 72, 0.16);
-}
-
-.preview-header,
-.preview-row {
-  display: flex;
-
-  justify-content: space-between;
-  align-items: center;
-}
-
-.preview-header {
-  margin-bottom: 28px;
-}
-
-.preview-header span {
-  color: #25a77f;
-  font-size: 12px;
-}
-
-.preview-row {
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-
-/* =====================================
-   7. PROJECT PROGRESS BAR
-===================================== */
-
-.progress-track {
-  height: 10px;
-
-  background: #f0e7f1;
-
-  border-radius: 20px;
-
-  overflow: hidden;
-}
-
-.progress-fill {
-  width: 75%;
-  height: 100%;
-
-  background: #d96ca8;
-
-  border-radius: 20px;
-}
-
-
-/* =====================================
-   8. TASK STATISTICS
-===================================== */
-
-.preview-stats {
-  display: flex;
-
-  justify-content: space-between;
-
-  gap: 12px;
-  margin-top: 27px;
-}
-
-.preview-stats div {
-  display: flex;
-  flex-direction: column;
-
-  gap: 6px;
-}
-
-.preview-stats strong {
-  font-size: 24px;
-}
-
-.preview-stats small {
+.brand span {
   font-size: 11px;
-  color: #81768b;
+  color: #94a3b8;
 }
 
-.hero-footer {
-  font-size: 12px;
-
-  opacity: 0.85;
-
-  position: relative;
-  z-index: 1;
-}
-
-
-/* =====================================
-   9. RIGHT SIDE - FORM PANEL
-===================================== */
-
-.auth-panel {
-  width: 50%;
-
-  padding: 35px 55px;
-
+.search-container {
+  max-width: 520px;
+  flex: 1;
+  height: 42px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   display: flex;
-  flex-direction: column;
-
-  background: #ffffff;
+  align-items: center;
+  padding: 0 14px;
+  gap: 10px;
 }
 
-
-/* =====================================
-   10. LOGIN / REGISTER NAVIGATION
-===================================== */
-
-.auth-nav {
-  display: flex;
-
-  justify-content: flex-end;
-
-  gap: 30px;
-}
-
-.auth-nav button {
+.search-container input {
   border: none;
-
-  background: transparent;
-
-  padding: 10px 0;
-
-  font-size: 14px;
-
-  color: #847c8a;
-}
-
-.auth-nav button.active {
-  color: #ca579b;
-
-  font-weight: bold;
-
-  border-bottom: 2px solid #ca579b;
-}
-
-
-/* =====================================
-   11. LOGIN / REGISTER FORM
-===================================== */
-
-.form-container {
+  outline: none;
   width: 100%;
-
-  max-width: 400px;
-
-  margin: auto;
-
-  padding: 35px 0;
+  background: transparent;
+  color: #334155;
 }
 
-.eyebrow {
-  color: #c65a9d;
-
-  font-size: 12px;
-
-  font-weight: bold;
-
-  letter-spacing: 2px;
-}
-
-.form-container h1 {
-  font-size: 34px;
-
-  margin: 12px 0;
-}
-
-.subtitle {
-  color: #857e8b;
-
-  line-height: 1.6;
-
-  font-size: 14px;
-
-  margin-bottom: 30px;
-}
-
-
-/* =====================================
-   12. INPUT FIELDS
-===================================== */
-
-.form-group {
+.nav-actions {
+  margin-left: auto;
   display: flex;
-  flex-direction: column;
-
-  gap: 9px;
-
-  margin-bottom: 19px;
+  align-items: center;
+  gap: 12px;
 }
 
-.form-group label {
-  font-size: 14px;
-
+.quick-add,
+.add-task-button {
+  border: none;
+  background: #4f46e5;
+  color: white;
+  padding: 11px 18px;
+  border-radius: 9px;
   font-weight: 600;
 }
 
-.form-group input,
-.form-group select {
-  width: 100%;
-
-  padding: 14px 15px;
-
-  border: 1px solid #eadde8;
-
+.logout-button {
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #334155;
+  padding: 10px 14px;
   border-radius: 9px;
-
-  outline: none;
-
-  background: #fffafd;
-
-  color: #302339;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #c963a1;
-
-  box-shadow:
-    0 0 0 3px rgba(201, 99, 161, 0.12);
+.logout-button:hover {
+  background: #f8fafc;
 }
 
-
-/* =====================================
-   13. SIGN IN / REGISTER BUTTON
-===================================== */
-
-.primary-button {
-  width: 100%;
-
-  margin-top: 10px;
-
-  padding: 15px;
-
-  border: none;
-
-  border-radius: 9px;
-
-  color: white;
-
-  background: #cf65a6;
-
-  font-weight: bold;
-
-  transition: background 0.2s ease;
+.icon-button {
+  position: relative;
+  border: 1px solid #e2e8f0;
+  background: white;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
 }
 
-.primary-button:hover {
-  background: #b74b8d;
+.notification-dot {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  top: 8px;
+  right: 8px;
 }
 
-.primary-button:focus-visible,
-.text-link:focus-visible,
-.auth-nav button:focus-visible {
-  outline: 3px solid #765baf;
-  outline-offset: 3px;
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
 }
 
+.profile strong,
+.profile span {
+  display: block;
+}
 
-/* =====================================
-   14. REGISTER LINK
-===================================== */
-
-.switch-text {
-  text-align: center;
-
+.profile strong {
   font-size: 13px;
-
-  color: #81768a;
-
-  margin-top: 25px;
 }
 
-.text-link {
-  border: none;
+.profile span {
+  color: #94a3b8;
+  font-size: 11px;
+}
 
+.avatar,
+.activity-avatar,
+.task-user {
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: #4338ca;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+}
+
+/* MAIN LAYOUT */
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 280px;
+  min-height: calc(100vh - 72px);
+}
+
+/* LEFT SIDEBAR */
+
+.sidebar {
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  padding: 22px 14px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-item,
+.project-item,
+.filter-item {
+  border: none;
   background: transparent;
-
-  padding: 0;
-
-  color: #c45799;
-
-  font-weight: bold;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 14px;
 }
 
+.menu-item {
+  display: flex;
+  gap: 11px;
+  text-decoration: none;
+}
 
-/* =====================================
-   15. ERROR / SUCCESS MESSAGE
-===================================== */
+.dashboard-my-tasks {
+  display: none;
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+}
 
-.form-message {
-  color: #a33170;
+.menu-item:hover,
+.menu-item.active,
+.project-item:hover,
+.filter-item:hover {
+  background: #eef2ff;
+  color: #4f46e5;
+}
 
-  background: #fff0f7;
+.menu-item.active {
+  font-weight: 600;
+}
 
-  padding: 13px;
+.sidebar-section {
+  margin-top: 28px;
+}
 
-  border-radius: 8px;
+.sidebar-title {
+  padding: 0 10px 8px;
+  display: flex;
+  justify-content: space-between;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+}
 
+.sidebar-title button {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+}
+
+.project-item,
+.filter-item {
+  width: 100%;
+}
+
+.project-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  background: #6366f1;
+  border-radius: 50%;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 5px 10px;
+}
+
+.tags span {
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* MAIN CONTENT */
+
+.main-content {
+  min-width: 0;
+  padding: 28px;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.small-title {
+  color: #6366f1 !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.page-heading h1 {
+  margin: 3px 0 5px;
+  font-size: 26px;
+}
+
+.page-heading p,
+.section-heading p {
+  margin: 0;
+  color: #94a3b8;
   font-size: 13px;
+}
 
+/* OVERVIEW */
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.overview-card {
+  background: white;
+  border: 1px solid #e8ebf1;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.overview-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #eef2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4f46e5;
+}
+
+.overview-card p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.overview-card h2 {
+  margin: 3px 0;
+}
+
+.overview-card span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* BOARD */
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0 14px;
+}
+
+.section-heading h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.filter-button {
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  padding: 9px 14px;
+}
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(210px, 1fr));
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.kanban-column {
+  background: #f1f5f9;
+  padding: 12px;
+  border-radius: 12px;
+  min-height: 450px;
+}
+
+.column-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 3px 12px;
+}
+
+.column-title h3 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.column-title span {
+  background: #e2e8f0;
+  border-radius: 20px;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.task-card {
+  background: white;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 11px;
+  border: 1px solid #e8ebf1;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.03);
+}
+
+.task-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.task-top button {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+}
+
+.priority {
+  font-size: 10px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.priority.high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.priority.medium {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.priority.low {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.task-card h3 {
+  font-size: 13px;
+  margin: 11px 0 7px;
+}
+
+.task-card p {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.subtask {
+  margin-top: 12px;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.task-bottom {
+  border-top: 1px solid #f1f5f9;
+  margin-top: 13px;
+  padding-top: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.task-user {
+  width: 28px;
+  height: 28px;
+  font-size: 9px;
+}
+
+.column-add {
+  border: 1px dashed #cbd5e1;
+  background: transparent;
+  color: #64748b;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* RIGHT SIDEBAR */
+
+.right-sidebar {
+  background: white;
+  border-left: 1px solid #e5e7eb;
+  padding: 25px 18px;
+}
+
+.right-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.right-title h3,
+.notes h3 {
+  font-size: 14px;
+}
+
+.right-title button {
+  border: none;
+  background: transparent;
+}
+
+.activity {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.activity-avatar {
+  min-width: 34px;
+  height: 34px;
+  font-size: 10px;
+}
+
+.activity p {
+  margin: 0;
+  font-size: 11px;
+  color: #64748b;
   line-height: 1.5;
 }
 
-
-/* =====================================
-   16. TEMPORARY DASHBOARD
-===================================== */
-
-.dashboard-page {
-  min-height: 100vh;
-
-  display: flex;
-
-  justify-content: center;
-  align-items: center;
-
-  padding: 25px;
-
-  background: #fff1f8;
+.activity span {
+  font-size: 9px;
+  color: #94a3b8;
 }
 
-.dashboard-card {
-  background: white;
+.notes {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 30px;
+  padding-top: 15px;
+}
 
-  padding: 45px;
-
-  border-radius: 18px;
-
+.notes textarea {
   width: 100%;
-  max-width: 500px;
-
-  box-shadow:
-    0 12px 40px rgba(95, 42, 76, 0.09);
+  height: 90px;
+  resize: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  outline: none;
 }
 
-.dashboard-card h1 {
-  font-size: 28px;
+.notes button {
+  width: 100%;
+  margin-top: 8px;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  padding: 9px;
+  border-radius: 7px;
 }
 
+/* FOOTER */
 
-/* =====================================
-   17. MOBILE RESPONSIVENESS
-===================================== */
+.footer {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 11px;
+}
 
-@media (max-width: 850px) {
+.progress-container {
+  width: 250px;
+  height: 7px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-  .auth-shell {
-    flex-direction: column;
+.progress-bar {
+  height: 100%;
+  width: 68%;
+  background: #4f46e5;
+}
+
+.footer-links {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.footer-links button {
+  border: none;
+  background: transparent;
+  color: #64748b;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .dashboard-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
   }
 
-  .auth-hero {
-    width: 100%;
-
-    min-height: 280px;
-
-    padding: 25px;
-
-    background-position: center 30%;
-  }
-
-  .hero-content {
-    margin: 30px 0;
-  }
-
-  .hero-content h2 {
-    font-size: 33px;
-  }
-
-  .hero-description {
-    font-size: 14px;
-  }
-
-  .preview-card,
-  .hero-footer {
+  .right-sidebar {
     display: none;
   }
 
-  .auth-panel {
-    width: 100%;
+  .overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
-    padding: 25px;
+@media (max-width: 800px) {
+  .dashboard-my-tasks {
+    display: inline-block;
+  }
+  .dashboard-layout {
+    display: block;
   }
 
-  .form-container {
-    max-width: 450px;
-
-    padding: 35px 0;
+  .sidebar {
+    display: none;
   }
 
-  .form-container h1 {
-    font-size: 29px;
+  .profile {
+    display: none;
+  }
+
+  .brand {
+    width: auto;
+  }
+
+  .brand div:last-child {
+    display: none;
+  }
+
+  .quick-add {
+    display: none;
+  }
+
+  .main-content {
+    padding: 18px;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kanban-board {
+    grid-template-columns: repeat(4, 260px);
+  }
+
+  .footer {
+    display: none;
+  }
+}
+
+@media (max-width: 550px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-heading h1 {
+    font-size: 21px;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+  }
+
+  .add-task-button {
+    padding: 9px 11px;
   }
 }

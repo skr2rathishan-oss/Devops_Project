@@ -1,34 +1,81 @@
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
-export default function Sidebar() {
-  const { user } = useAuth();
-  if (!user) return null;
-
-  const links = [{ to: '/dashboard', label: 'Dashboard' }];
-
-  if (user.role === 'admin' || user.role === 'team_leader') {
-    links.push({ to: '/tasks', label: 'Tasks' });
-  }
-  if (user.role === 'team_member') {
-    links.push({ to: '/my-tasks', label: 'My Tasks' });
-  }
-  if (user.role === 'admin') {
-    links.push({ to: '/users', label: 'Users' });
-    links.push({ to: '/teams', label: 'Teams' });
-  }
-
+function Sidebar() {
   return (
-    <nav className="sidebar">
-      {links.map((link) => (
-        <NavLink
-          key={link.to}
-          to={link.to}
-          className={({ isActive }) => `sidebar__link${isActive ? ' sidebar__link--active' : ''}`}
-        >
-          {link.label}
+    <aside className="sidebar">
+      <nav className="sidebar-menu">
+        <NavLink to="/dashboard" className={({ isActive }) => `menu-item${isActive ? ' active' : ''}`}>
+          <span>▦</span>
+          Dashboard
         </NavLink>
-      ))}
-    </nav>
+
+        <NavLink to="/my-tasks" className={({ isActive }) => `menu-item${isActive ? ' active' : ''}`}>
+          <span>✓</span>
+          My Tasks
+        </NavLink>
+
+        <button className="menu-item">
+          <span>▣</span>
+          Calendar
+        </button>
+
+        <button className="menu-item">
+          <span>♟</span>
+          Team
+        </button>
+      </nav>
+
+      <div className="sidebar-section">
+        <div className="sidebar-title">
+          <span>PROJECTS</span>
+          <button>+</button>
+        </div>
+
+        <button className="project-item">
+          <span className="project-dot"></span>
+          Development
+        </button>
+
+        <button className="project-item">
+          <span className="project-dot"></span>
+          Marketing
+        </button>
+
+        <button className="project-item">
+          <span className="project-dot"></span>
+          UI/UX Design
+        </button>
+
+        <button className="project-item">
+          <span className="project-dot"></span>
+          Research
+        </button>
+      </div>
+
+      <div className="sidebar-section">
+        <div className="sidebar-title">
+          <span>FILTERS</span>
+        </div>
+
+        <button className="filter-item">🔥 High Priority</button>
+        <button className="filter-item">📅 Due This Week</button>
+        <button className="filter-item">👤 Assigned to Me</button>
+      </div>
+
+      <div className="sidebar-section">
+        <div className="sidebar-title">
+          <span>TAGS</span>
+        </div>
+
+        <div className="tags">
+          <span>Urgent</span>
+          <span>Review</span>
+          <span>Frontend</span>
+          <span>Backend</span>
+        </div>
+      </div>
+    </aside>
   );
 }
+
+export default Sidebar;

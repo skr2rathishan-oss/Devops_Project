@@ -1,70 +1,44 @@
-import { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
-import { useAuth } from '../context/AuthContext';
-import { getTasks, getMyTasks } from '../services/taskService';
-import type { Task } from '../types';
+import '../App.css';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+import KanbanBoard from '../components/KanbanBoard';
+import RightSidebar from '../components/RightSidebar';
+import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
-  const { user } = useAuth();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setStatus('loading');
-      try {
-        const data = user?.role === 'team_member' ? await getMyTasks() : await getTasks();
-        if (!cancelled) {
-          setTasks(data);
-          setStatus('ready');
-        }
-      } catch {
-        if (!cancelled) setStatus('error');
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [user?.role]);
-
-  const summary = {
-    total: tasks.length,
-    pending: tasks.filter((t) => t.status === 'pending').length,
-    inProgress: tasks.filter((t) => t.status === 'in_progress').length,
-    completed: tasks.filter((t) => t.status === 'completed').length,
-  };
-
   return (
-    <Layout>
-      <h1 className="page-title">Dashboard</h1>
-
-      {status === 'loading' && <p className="page-state">Loading your tasks…</p>}
-      {status === 'error' && <p className="page-state page-state--error">Could not load tasks. Try refreshing.</p>}
-
-      {status === 'ready' && (
-        <div className="summary-grid">
-          <div className="summary-card">
-            <span className="summary-card__value">{summary.total}</span>
-            <span className="summary-card__label">Total tasks</span>
+    <div className="app">
+      <Navbar />
+      <div className="dashboard-layout">
+        <Sidebar />
+        <main className="main-content">
+          <div className="page-heading">
+            <div>
+              <p className="small-title">WORKSPACE</p>
+              <h1>Task Management Dashboard</h1>
+              <p className="subtitle">Manage your team's tasks, deadlines and progress.</p>
+            </div>
+            <button className="add-task-button">+ Add Task</button>
           </div>
-          <div className="summary-card">
-            <span className="summary-card__value">{summary.pending}</span>
-            <span className="summary-card__label">Pending</span>
+          <Link className="dashboard-my-tasks" to="/my-tasks">✓ My Tasks →</Link>
+          <div className="section-heading">
+            <div>
+              <h2>Development Board</h2>
+              <p>Track tasks across your current project.</p>
+            </div>
+            <button className="filter-button">Filter</button>
           </div>
-          <div className="summary-card">
-            <span className="summary-card__value">{summary.inProgress}</span>
-            <span className="summary-card__label">In progress</span>
-          </div>
-          <div className="summary-card">
-            <span className="summary-card__value">{summary.completed}</span>
-            <span className="summary-card__label">Completed</span>
-          </div>
+          <KanbanBoard />
+        </main>
+        <RightSidebar />
+      </div>
+      <footer className="footer">
+        <div><strong>Project Progress</strong><span> 68%</span></div>
+        <div className="progress-container"><div className="progress-bar" /></div>
+        <div className="footer-links">
+          <button>Export Report</button><button>Settings</button><button>Integrations</button>
         </div>
-      )}
-    </Layout>
+      </footer>
+    </div>
   );
 }
