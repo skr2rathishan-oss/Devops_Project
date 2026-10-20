@@ -3,7 +3,7 @@ const AppError = require("../utils/AppError");
 const userModel = require("../models/user.model");
 const teamModel = require("../models/team.model");
 const { toPublicUser } = require("../utils/serializers");
-const { EMAIL_PATTERN, MIN_PASSWORD_LENGTH, parseOptionalId } = require("../utils/validators");
+const { EMAIL_PATTERN, MIN_PASSWORD_LENGTH, parseId, parseOptionalId } = require("../utils/validators");
 
 // Same bcrypt cost as auth.controller.
 const SALT_ROUNDS = 10;
@@ -91,4 +91,45 @@ async function createUser(req, res, next) {
   }
 }
 
-module.exports = { getUsers, createUser };
+// Admins move users between teams and change their role. Fields left out of the body keep
+// their current value; teamId '' or null removes the user from their team.
+async function updateUser(req, res, next) {
+  try {
+    const body = req.body || {};
+    const id = parseId(req.params.id, "user id");
+    const user = await userModel.findById(id);
+    if (!user) throw new AppError("User not found", 404);
+
+    const role = body.role === undefined ? user.role : body.role;
+    if (!ROLES.includes(role)) {
+      throw new AppError("Role must be admin, team_leader or team_member", 400);
+    }
+    // Stops an admin from locking themselves out of the admin pages.
+    if (id === req.user.id && role !== "admin") {
+      throw new AppError("You can't remove your own admin role", 400);
+    }
+
+    const teamId = body.teamId === undefined ? user.team_id : parseOptionalId(body.teamId, "teamId");
+    if (teamId !== null && !(await teamModel.findById(teamId))) {
+      throw new AppError("Selected team does not exist", 400);
+    }
+
+    let updated;
+    try {
+      updated = await userModel.updateRoleAndTeam(id, { role, teamId });
+    } catch (err) {
+      // The team can be deleted between the check above and the write.
+      if (err.code === "ER_NO_REFERENCED_ROW_2") {
+        throw new AppError("Selected team does not exist", 400);
+      }
+      throw err;
+    }
+    if (!updated) throw new AppError("User not found", 404);
+
+    res.status(200).json(toPublicUser(updated));
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getUsers, createUser, updateUser };

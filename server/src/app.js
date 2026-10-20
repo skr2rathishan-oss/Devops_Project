@@ -4,6 +4,8 @@ const authRoutes = require("./routes/auth.routes");
 const teamRoutes = require("./routes/team.routes");
 const userRoutes = require("./routes/user.routes");
 const taskRoutes = require("./routes/task.routes");
+const noteRoutes = require("./routes/note.routes");
+const eventRoutes = require("./routes/event.routes");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
@@ -17,6 +19,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/notes", noteRoutes);
+app.use("/api/events", eventRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

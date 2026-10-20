@@ -2,7 +2,7 @@
 import { useState, type FormEvent } from "react";
 
 type LoginPageProps = {
-  onLogin: (identifier: string, password: string) => void;
+  onLogin: (identifier: string, password: string) => Promise<void>;
   onGoRegister: () => void;
   message: string;
 };
@@ -14,11 +14,17 @@ export default function LoginPage({
 }: LoginPageProps) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    onLogin(identifier, password);
+    setSubmitting(true);
+    try {
+      await onLogin(identifier, password);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -76,8 +82,12 @@ export default function LoginPage({
           </p>
         )}
 
-        <button type="submit" className="primary-button">
-          Sign In
+        <button
+          type="submit"
+          className="primary-button"
+          disabled={submitting}
+        >
+          {submitting ? "Signing In…" : "Sign In"}
         </button>
 
       </form>

@@ -18,3 +18,14 @@ export async function createUser(values: CreateUserValues): Promise<User> {
   const { data } = await api.post<User>('/users', values);
   return data;
 }
+
+export interface UpdateUserValues {
+  role?: Role;
+  teamId?: number | '';
+}
+
+// Admin only: change a user's role and/or team ('' removes them from their team).
+export async function updateUser(id: number, values: UpdateUserValues): Promise<User> {
+  const { data } = await api.put<User>(`/users/${id}`, values);
+  return data;
+}

@@ -1,0 +1,406 @@
+/* Shared UI primitives for pages inside the app shell (Layout) and for modals:
+   page headers and states, buttons, form fields, tables, the Teams grid and the modal.
+   The shell itself (navbar, sidebar, layout grid) is styled by App.css. */
+
+.app,
+.modal {
+  --c-bg: #f6f8fc;
+  --c-surface: #ffffff;
+  --c-border: #e5e7eb;
+  --c-border-strong: #cbd5e1;
+  --c-text: #1e293b;
+  --c-muted: #64748b;
+  --c-subtle: #94a3b8;
+  --c-primary: #e4690b;
+  --c-primary-hover: #c25609;
+  --c-primary-soft: #fff4ea;
+  --c-danger: #dc2626;
+  --c-danger-soft: #fef2f2;
+  --radius: 10px;
+}
+
+.modal,
+.modal * {
+  box-sizing: border-box;
+}
+
+.modal button,
+.modal input,
+.modal select,
+.modal textarea {
+  font: inherit;
+}
+
+/* ---------- Page header & states ---------- */
+
+.page-header,
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  margin: 28px 0 14px;
+}
+
+.page-header__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.page-eyebrow {
+  margin: 0 0 4px;
+  color: var(--c-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-title {
+  margin: 0 0 4px;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.section-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--c-muted);
+  font-size: 14px;
+}
+
+.page-state {
+  margin: 0;
+  padding: 24px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  color: var(--c-muted);
+}
+
+.page-state p {
+  margin: 0 0 12px;
+}
+
+.page-state--error {
+  border-color: #fecaca;
+  background: var(--c-danger-soft);
+  color: #991b1b;
+}
+
+.empty-state {
+  padding: 40px 24px;
+  border: 1px dashed var(--c-border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--c-muted);
+}
+
+.empty-state h3 {
+  margin: 0 0 6px;
+  color: var(--c-text);
+}
+
+.empty-state p {
+  margin: 0 0 16px;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: var(--c-danger-soft);
+  color: #991b1b;
+  font-size: 14px;
+}
+
+.text-muted {
+  color: var(--c-subtle);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--c-primary);
+  color: #fff;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--c-primary-hover);
+}
+
+.btn--ghost {
+  background: #fff;
+  border-color: var(--c-border, #e5e7eb);
+  color: #334155;
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.link-button {
+  padding: 2px 4px;
+  border: none;
+  background: none;
+  color: var(--c-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.link-button--danger {
+  color: #dc2626;
+}
+
+.modal :focus-visible {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Forms ---------- */
+
+.field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.field-row {
+  display: flex;
+  gap: 14px;
+}
+
+.input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(228, 105, 11, 0.15);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-error {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.inline-form {
+  max-width: 720px;
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+
+.inline-form--row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.inline-form--row .form-error {
+  flex-basis: 100%;
+}
+
+.inline-form--row .field {
+  margin-bottom: 0;
+}
+
+/* ---------- Tables ---------- */
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--c-surface);
+  font-size: 14px;
+  border: 1px solid var(--c-border);
+}
+
+.table-scroll .data-table {
+  border: none;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table th {
+  background: #f8fafc;
+  color: var(--c-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---------- Teams page ---------- */
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.team-card {
+  padding: 18px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+
+.team-card__title {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.team-card__members {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--c-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.team-card__empty {
+  list-style: none;
+  margin-left: -18px;
+  color: var(--c-subtle);
+}
+
+/* ---------- Modal ---------- */
+
+.modal {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  padding: 22px;
+  border: none;
+  border-radius: 14px;
+  background: #fff;
+  color: #1e293b;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+}
+
+.modal::backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.modal__header h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.modal__close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 800px) {
+  .page-title {
+    font-size: 22px;
+  }
+
+  .field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

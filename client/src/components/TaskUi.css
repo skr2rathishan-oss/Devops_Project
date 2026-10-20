@@ -1,0 +1,141 @@
+/* Shared task UI used by the team tasks page and the task form/filter components:
+   filter bar, priority badges, status select and the team tasks table. */
+
+/* ---------- Filters ---------- */
+
+.task-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.task-filters .input {
+  width: auto;
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+.task-filters .task-filters__search {
+  width: 200px;
+}
+
+.task-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.task-badge--high {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.task-badge--medium {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.task-badge--low {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.status-select--in_progress {
+  border-color: #a5b4fc;
+  background: #eef2ff;
+}
+
+.status-select--completed {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.status-select:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---------- Team tasks table ---------- */
+
+.task-table {
+  min-width: 760px;
+}
+
+.task-table__title {
+  display: block;
+}
+
+.task-table__description {
+  display: block;
+  max-width: 360px;
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-table .status-select {
+  width: auto;
+  min-width: 130px;
+}
+
+.task-table__deadline {
+  display: block;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.task-table__deadline.is-overdue {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.task-table__actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ---------- Task form ---------- */
+
+.task-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* Pending uses the default look. */
+.status-select--review {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+@media (max-width: 800px) {
+  .task-filters,
+  .task-filters .input,
+  .task-filters .task-filters__search {
+    width: 100%;
+  }
+}
+
+.task-form__hint {
+  color: #b45309;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}

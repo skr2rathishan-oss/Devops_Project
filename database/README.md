@@ -10,7 +10,7 @@ Connect as `root` (the **Local instance MySQL80** connection), then for each fil
 | Order | File | What it does |
 |---|---|---|
 | 1 | `setup_local.sql` | Creates the `app_db` database and the `app_user` login |
-| 2 | `init.sql` | Creates the `teams`, `users` and `tasks` tables |
+| 2 | `init.sql` | Creates the `teams`, `users`, `tasks`, `notes` and `calendar_events` tables |
 | 3 | `seed.sql` | Optional: adds test accounts and sample tasks |
 
 Click the refresh icon in the **Schemas** panel to see `app_db`.
@@ -18,6 +18,9 @@ Click the refresh icon in the **Schemas** panel to see `app_db`.
 `init.sql` is safe to re-run: on an existing database it only adds the tables that are missing
 (e.g. `tasks`). With Docker, the scripts in `database/` only run when the `mysql_data` volume is
 empty, so either run `docker compose down -v` (this wipes all data) or run `init.sql` manually.
+
+A database created before the "review" status, Quick Notes and the calendar existed also needs
+`migrations/001_review_status_notes_calendar.sql` (safe to re-run, keeps all data).
 
 ## 3. Configure and check the server
 `server/.env` must have `DB_USER=app_user`, `DB_PASSWORD=app_password`, `DB_NAME=app_db`

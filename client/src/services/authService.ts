@@ -16,6 +16,13 @@ export async function register(values: RegisterValues): Promise<AuthResponse> {
   return data;
 }
 
+// Re-reads the signed-in user from the server and refreshes the stored copy.
+export async function fetchCurrentUser(): Promise<User> {
+  const { data } = await api.get<{ user: User }>('/auth/me');
+  localStorage.setItem('user', JSON.stringify(data.user));
+  return data.user;
+}
+
 export function logout(): void {
   localStorage.removeItem('token');
   localStorage.removeItem('user');

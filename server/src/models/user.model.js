@@ -46,6 +46,11 @@ async function create({ name, username, email, passwordHash, role, teamId = null
   return findById(result.insertId);
 }
 
+async function updateRoleAndTeam(id, { role, teamId }) {
+  await pool.query("UPDATE users SET role = ?, team_id = ? WHERE id = ?", [role, teamId, id]);
+  return findById(id);
+}
+
 async function setResetToken(email, tokenHash, expiresAt) {
   await pool.query(
     "UPDATE users SET reset_token_hash = ?, reset_token_expires = ? WHERE email = ?",
@@ -76,6 +81,7 @@ module.exports = {
   findAll,
   findByTeamOrId,
   create,
+  updateRoleAndTeam,
   setResetToken,
   findByResetTokenHash,
   resetPassword,

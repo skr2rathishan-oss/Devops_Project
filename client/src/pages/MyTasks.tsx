@@ -1,102 +1,87 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { getMyTasks, updateTaskStatus } from "../services/taskService";
+import { getTeams } from "../services/teamService";
+import { getAuthErrorMessage } from "../services/authService";
+import { ROLE_LABELS, STATUS_ORDER, daysUntilDue, initials } from "../components/taskMeta";
+import type { Task, TaskStatus, Team } from "../types";
 import "./MyTasks.css";
 
-type Status = "To Do" | "In Progress" | "Review" | "Completed";
-
-type Task = {
-  id: number;
-  title: string;
-  project: string;
-  team: string;
-  status: Status;
-  dueDate: string;
+// The wording this page uses for each status.
+const STATUS_TEXT: Record<TaskStatus, string> = {
+  pending: "To Do",
+  in_progress: "In Progress",
+  review: "Review",
+  completed: "Completed",
 };
 
-const initialTasks: Task[] = [
-  {
-    id: 1,
-    title: "Dashboard UI",
-    project: "TeamSpace",
-    team: "Development Team",
-    status: "In Progress",
-    dueDate: "2026-10-16",
-  },
-  {
-    id: 2,
-    title: "Login Page",
-    project: "TeamSpace",
-    team: "Development Team",
-    status: "Completed",
-    dueDate: "2026-10-10",
-  },
-  {
-    id: 3,
-    title: "API Testing",
-    project: "TeamSpace",
-    team: "Development Team",
-    status: "To Do",
-    dueDate: "2026-10-18",
-  },
-  {
-    id: 4,
-    title: "Database Design",
-    project: "TeamSpace",
-    team: "Development Team",
-    status: "Completed",
-    dueDate: "2026-10-12",
-  },
-  {
-    id: 5,
-    title: "Website Wireframes",
-    project: "Website Redesign",
-    team: "UI/UX Team",
-    status: "In Progress",
-    dueDate: "2026-10-20",
-  },
-];
-
-const teams = ["Development Team", "UI/UX Team"];
+function remainingText(task: Task) {
+  if (task.status === "completed") return "Finished";
+  const days = daysUntilDue(task);
+  if (days === null) return "No deadline";
+  if (days < 0) return `${Math.abs(days)} days overdue`;
+  if (days === 0) return "Due today";
+  return `${days} days left`;
+}
 
 function MyTasks() {
-  const [selectedTeam, setSelectedTeam] = useState(teams[0]);
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
+  const [message, setMessage] = useState("");
+  const [savingId, setSavingId] = useState<number | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
-  const teamTasks = tasks.filter(
-    (task) => task.team === selectedTeam
-  );
+  useEffect(() => {
+    let active = true;
+    // Teams only name the user's team; the page still works without them.
+    Promise.all([getMyTasks(), getTeams().catch(() => [] as Team[])])
+      .then(([taskData, teamData]) => {
+        if (!active) return;
+        setTasks(taskData);
+        setTeams(teamData);
+        setLoadState("ready");
+      })
+      .catch((err: unknown) => {
+        if (!active) return;
+        setMessage(getAuthErrorMessage(err, "Could not load your tasks. Please try again."));
+        setLoadState("error");
+      });
+    return () => {
+      active = false;
+    };
+  }, [reloadKey]);
 
-  const total = teamTasks.length;
+  if (!user) return null;
 
-  const completed = teamTasks.filter(
-    (task) => task.status === "Completed"
-  ).length;
+  // Tasks assigned to you always belong to your own team, so the selector shows that team.
+  const teamName = teams.find((team) => team.id === user.teamId)?.name ?? "No team";
 
+  const total = tasks.length;
+  const completed = tasks.filter((task) => task.status === "completed").length;
   const remaining = total - completed;
+  const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-  const progress =
-    total === 0 ? 0 : Math.round((completed / total) * 100);
+  function retry() {
+    setMessage("");
+    setLoadState("loading");
+    setReloadKey((key) => key + 1);
+  }
 
-  const updateStatus = (taskId: number, newStatus: Status) => {
-    setTasks((previous) =>
-      previous.map((task) =>
-        task.id === taskId
-          ? { ...task, status: newStatus }
-          : task
-      )
-    );
-  };
-
-  const getDaysRemaining = (date: string) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const deadline = new Date(`${date}T00:00:00`);
-
-    return Math.round(
-      (deadline.getTime() - today.getTime()) / 86400000
-    );
+  const updateStatus = async (task: Task, newStatus: TaskStatus) => {
+    setSavingId(task.id);
+    setMessage("");
+    try {
+      const updated = await updateTaskStatus(task.id, newStatus);
+      setTasks((previous) => previous.map((item) => (item.id === updated.id ? updated : item)));
+    } catch (err) {
+      setMessage(getAuthErrorMessage(err, `Could not update "${task.title}". Please try again.`));
+    } finally {
+      setSavingId(null);
+    }
   };
 
   return (
@@ -106,6 +91,7 @@ function MyTasks() {
           <span aria-hidden="true">←</span>
           Back to Dashboard
         </Link>
+        <Link className="mytasks-back-link" to="/calendar">Calendar</Link>
       </nav>
 
       <div className="mytasks-header">
@@ -117,29 +103,19 @@ function MyTasks() {
         <div className="team-selector">
           <label htmlFor="team-select">Current Team</label>
 
-          <select
-            id="team-select"
-            value={selectedTeam}
-            onChange={(event) =>
-              setSelectedTeam(event.target.value)
-            }
-          >
-            {teams.map((team) => (
-              <option key={team} value={team}>
-                {team}
-              </option>
-            ))}
+          <select id="team-select">
+            <option>{teamName}</option>
           </select>
         </div>
       </div>
 
       <section className="mytasks-profile">
-        <div className="mytasks-avatar">SR</div>
+        <div className="mytasks-avatar">{initials(user.name)}</div>
 
         <div>
-          <h2>Subhashini Ranshika</h2>
-          <p>Frontend Developer</p>
-          <span>{selectedTeam}</span>
+          <h2>{user.name}</h2>
+          <p>{ROLE_LABELS[user.role].replace(/\b\w/g, (letter) => letter.toUpperCase())}</p>
+          <span>{teamName}</span>
         </div>
       </section>
 
@@ -166,14 +142,14 @@ function MyTasks() {
       <section className="mytasks-progress-card">
         <div>
           <h2>My Progress</h2>
-          <p>Task completion in {selectedTeam}</p>
+          <p>Task completion in {teamName}</p>
         </div>
 
         <div
           className="mytasks-progress-circle"
           style={{
             background: `conic-gradient(
-              #4f46e5 ${progress}%,
+              #e98b26 ${progress}%,
               #e5e7eb ${progress}%
             )`,
           }}
@@ -192,6 +168,17 @@ function MyTasks() {
       <section className="mytasks-table-card">
         <h2>My Assigned Tasks</h2>
 
+        {message && (
+          <p role="alert">
+            {message}{" "}
+            {loadState === "error" && (
+              <button type="button" className="mytasks-back-link" onClick={retry}>
+                Try again
+              </button>
+            )}
+          </p>
+        )}
+
         <div className="mytasks-table-wrapper">
           <table className="mytasks-table">
             <thead>
@@ -205,51 +192,41 @@ function MyTasks() {
             </thead>
 
             <tbody>
-              {teamTasks.map((task) => {
-                const days = getDaysRemaining(task.dueDate);
+              {tasks.map((task) => (
+                <tr key={task.id}>
+                  <td>{task.title}</td>
+                  <td>{teams.find((team) => team.id === task.assignedTeamId)?.name ?? teamName}</td>
 
-                return (
-                  <tr key={task.id}>
-                    <td>{task.title}</td>
-                    <td>{task.project}</td>
+                  <td>
+                    <select
+                      aria-label={`Status of ${task.title}`}
+                      value={task.status}
+                      disabled={savingId === task.id}
+                      onChange={(event) =>
+                        void updateStatus(task, event.target.value as TaskStatus)
+                      }
+                    >
+                      {STATUS_ORDER.map((status) => (
+                        <option key={status} value={status}>
+                          {STATUS_TEXT[status]}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
 
-                    <td>
-                      <select
-                        value={task.status}
-                        onChange={(event) =>
-                          updateStatus(
-                            task.id,
-                            event.target.value as Status
-                          )
-                        }
-                      >
-                        <option>To Do</option>
-                        <option>In Progress</option>
-                        <option>Review</option>
-                        <option>Completed</option>
-                      </select>
-                    </td>
+                  <td>{task.dueDate ?? "—"}</td>
 
-                    <td>{task.dueDate}</td>
-
-                    <td>
-                      {task.status === "Completed"
-                        ? "Finished"
-                        : days < 0
-                        ? `${Math.abs(days)} days overdue`
-                        : days === 0
-                        ? "Due today"
-                        : `${days} days left`}
-                    </td>
-                  </tr>
-                );
-              })}
+                  <td>{remainingText(task)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
-        {teamTasks.length === 0 && (
-          <p>No tasks assigned in this team.</p>
+        {loadState === "loading" && <p>Loading your tasks…</p>}
+
+        {loadState === "ready" && tasks.length === 0 && (
+          <p>No tasks assigned to you yet.</p>
         )}
       </section>
     </div>

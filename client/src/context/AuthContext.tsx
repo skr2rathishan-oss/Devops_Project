@@ -1,7 +1,13 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { User } from '../types';
-import { login as loginRequest, logout as logoutRequest, getStoredUser, getStoredToken } from '../services/authService';
+import {
+  login as loginRequest,
+  logout as logoutRequest,
+  getStoredUser,
+  getStoredToken,
+  fetchCurrentUser,
+} from '../services/authService';
 
 interface AuthContextValue {
   user: User | null;
@@ -24,6 +30,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedToken = getStoredToken();
     if (storedUser && storedToken) {
       setUser(storedUser);
+      // Then pick up changes an admin made since login (e.g. a new team or role).
+      // A rejected token is handled by the api interceptor, which signs the user out.
+      fetchCurrentUser()
+        .then(setUser)
+        .catch(() => {
+          /* Keep the stored user if the server can't be reached. */
+        });
     }
     setLoading(false);
   }, []);

@@ -1,4 +1,4 @@
--- STEP 2 of 3 - schema for the app (teams, users, tasks).
+-- STEP 2 of 3 - schema for the app (teams, users, tasks, notes, calendar_events).
 -- Run after setup_local.sql, in MySQL Workbench or with:
 --   mysql -u app_user -p app_db < database/init.sql
 
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   title VARCHAR(200) NOT NULL,
   description TEXT NULL,
   -- Match the client's TaskStatus / TaskPriority types
-  status ENUM('pending', 'in_progress', 'completed') NOT NULL DEFAULT 'pending',
+  status ENUM('pending', 'in_progress', 'review', 'completed') NOT NULL DEFAULT 'pending',
   priority ENUM('low', 'medium', 'high') NOT NULL DEFAULT 'medium',
   -- NULL = unassigned; deleting the assignee un-assigns the task instead of losing it
   assigned_to INT NULL,
@@ -62,4 +62,31 @@ CREATE TABLE IF NOT EXISTS tasks (
   INDEX idx_tasks_assigned_to (assigned_to),
   INDEX idx_tasks_created_by (created_by),
   INDEX idx_tasks_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dashboard "Quick Notes": one note per user.
+CREATE TABLE IF NOT EXISTS notes (
+  user_id INT PRIMARY KEY,
+  content TEXT NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_notes_user
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Personal calendar events. Task deadlines on the calendar come from tasks.due_date.
+CREATE TABLE IF NOT EXISTS calendar_events (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  event_date DATE NOT NULL,
+  -- NULL = all-day event
+  event_time TIME NULL,
+  notes TEXT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_calendar_events_user
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    ON DELETE CASCADE,
+  INDEX idx_calendar_events_user_date (user_id, event_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -2,10 +2,13 @@
   padding: 28px;
   background: #f6f8fc;
   min-height: 100vh;
-  color: #1e293b;
+  color: #3b361e;
 }
 
 .mytasks-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
@@ -17,7 +20,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   background: white;
-  color: #4f46e5;
+  color: #dc5820;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -28,7 +31,7 @@
 }
 
 .mytasks-back-link:focus-visible {
-  outline: 2px solid #4f46e5;
+  outline: 2px solid #e58b46;
   outline-offset: 3px;
 }
 
@@ -46,7 +49,7 @@
 }
 
 .mytasks-header p {
-  color: #64748b;
+  color: #8b7464;
   margin: 0;
 }
 
@@ -58,7 +61,7 @@
 
 .team-selector label {
   font-size: 12px;
-  color: #64748b;
+  color: #8b6464;
 }
 
 .team-selector select,
@@ -67,7 +70,7 @@
   border-radius: 8px;
   padding: 10px;
   background: white;
-  color: #334155;
+  color: #554233;
 }
 
 .mytasks-profile {
@@ -86,7 +89,7 @@
   height: 65px;
   border-radius: 50%;
   background: #e0e7ff;
-  color: #4f46e5;
+  color: #e79267;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -101,11 +104,11 @@
 
 .mytasks-profile p {
   margin: 0 0 5px;
-  color: #64748b;
+  color: #8b7164;
 }
 
 .mytasks-profile span {
-  color: #4f46e5;
+  color: #e3811f;
   font-size: 13px;
 }
 
@@ -126,18 +129,18 @@
 }
 
 .mytasks-stat-card span {
-  color: #64748b;
+  color: #8b6d64;
   font-size: 13px;
 }
 
 .mytasks-stat-card h2 {
   font-size: 32px;
   margin: 10px 0;
-  color: #4f46e5;
+  color: #e98b26;
 }
 
 .mytasks-stat-card p {
-  color: #94a3b8;
+  color: #b89b94;
   font-size: 12px;
   margin: 0;
 }

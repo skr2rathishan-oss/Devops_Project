@@ -1,0 +1,347 @@
+/* Login / Register layout. Every rule is scoped under .auth-shell so the
+   dashboard stylesheet (App.css), which stays loaded after logout in the SPA,
+   can't restyle these pages, and these rules can't leak into the dashboard. */
+
+.auth-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fff5fa;
+  color: #282037;
+}
+
+.auth-shell *,
+.auth-shell *::before,
+.auth-shell *::after {
+  box-sizing: border-box;
+}
+
+.auth-shell button,
+.auth-shell input,
+.auth-shell select {
+  font: inherit;
+}
+
+.auth-shell button {
+  cursor: pointer;
+}
+
+/* Left side: team photo */
+
+.auth-shell .auth-hero {
+  width: 50%;
+  padding: 45px 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-shell .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 25px;
+  font-weight: bold;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-shell .brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: white;
+  color: #bb69a5;
+  border-radius: 12px;
+}
+
+.auth-shell .hero-content {
+  width: 100%;
+  max-width: 510px;
+  margin: 55px auto;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-shell .hero-tag {
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+.auth-shell .hero-content h2 {
+  margin: 20px 0;
+  font-size: clamp(36px, 4vw, 55px);
+  line-height: 1.15;
+}
+
+.auth-shell .hero-description {
+  font-size: 16px;
+  line-height: 1.8;
+  opacity: 0.95;
+}
+
+/* Project overview card */
+
+.auth-shell .preview-card {
+  margin-top: 45px;
+  padding: 26px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #332640;
+  box-shadow: 0 20px 55px rgba(60, 31, 72, 0.16);
+}
+
+.auth-shell .preview-header,
+.auth-shell .preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auth-shell .preview-header {
+  margin-bottom: 28px;
+}
+
+.auth-shell .preview-header span {
+  color: #25a77f;
+  font-size: 12px;
+}
+
+.auth-shell .preview-row {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.auth-shell .progress-track {
+  height: 10px;
+  background: #f0e7f1;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.auth-shell .progress-fill {
+  width: 75%;
+  height: 100%;
+  background: #d96ca8;
+  border-radius: 20px;
+}
+
+.auth-shell .preview-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 27px;
+}
+
+.auth-shell .preview-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-shell .preview-stats strong {
+  font-size: 24px;
+}
+
+.auth-shell .preview-stats small {
+  font-size: 11px;
+  color: #81768b;
+}
+
+.auth-shell .hero-footer {
+  font-size: 12px;
+  opacity: 0.85;
+  position: relative;
+  z-index: 1;
+}
+
+/* Right side: form panel */
+
+.auth-shell .auth-panel {
+  width: 50%;
+  padding: 35px 55px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.auth-shell .auth-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 30px;
+}
+
+.auth-shell .auth-nav button {
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #847c8a;
+}
+
+.auth-shell .auth-nav button.active {
+  color: #ca579b;
+  font-weight: bold;
+  border-bottom: 2px solid #ca579b;
+}
+
+.auth-shell .form-container {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 35px 0;
+}
+
+.auth-shell .eyebrow {
+  color: #c65a9d;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.auth-shell .form-container h1 {
+  font-size: 34px;
+  margin: 12px 0;
+}
+
+.auth-shell .subtitle {
+  color: #857e8b;
+  line-height: 1.6;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.auth-shell .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 19px;
+}
+
+.auth-shell .form-group label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-shell .form-group input,
+.auth-shell .form-group select {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid #eadde8;
+  border-radius: 9px;
+  outline: none;
+  background: #fffafd;
+  color: #302339;
+}
+
+.auth-shell .form-group input:focus,
+.auth-shell .form-group select:focus {
+  border-color: #c963a1;
+  box-shadow: 0 0 0 3px rgba(201, 99, 161, 0.12);
+}
+
+.auth-shell .primary-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 15px;
+  border: none;
+  border-radius: 9px;
+  color: white;
+  background: #cf65a6;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.auth-shell .primary-button:hover:not(:disabled) {
+  background: #b74b8d;
+}
+
+.auth-shell .primary-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auth-shell .primary-button:focus-visible,
+.auth-shell .text-link:focus-visible,
+.auth-shell .auth-nav button:focus-visible {
+  outline: 3px solid #765baf;
+  outline-offset: 3px;
+}
+
+.auth-shell .switch-text {
+  text-align: center;
+  font-size: 13px;
+  color: #81768a;
+  margin-top: 25px;
+}
+
+.auth-shell .text-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #c45799;
+  font-weight: bold;
+}
+
+.auth-shell .form-message {
+  color: #a33170;
+  background: #fff0f7;
+  padding: 13px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 850px) {
+  .auth-shell {
+    flex-direction: column;
+  }
+
+  .auth-shell .auth-hero {
+    width: 100%;
+    min-height: 280px;
+    padding: 25px;
+    background-position: center 30%;
+  }
+
+  .auth-shell .hero-content {
+    margin: 30px 0;
+  }
+
+  .auth-shell .hero-content h2 {
+    font-size: 33px;
+  }
+
+  .auth-shell .hero-description {
+    font-size: 14px;
+  }
+
+  .auth-shell .preview-card,
+  .auth-shell .hero-footer {
+    display: none;
+  }
+
+  .auth-shell .auth-panel {
+    width: 100%;
+    padding: 25px;
+  }
+
+  .auth-shell .form-container {
+    max-width: 450px;
+  }
+
+  .auth-shell .form-container h1 {
+    font-size: 29px;
+  }
+}

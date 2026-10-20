@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import Layout from '../components/Layout';
 import { getTeams, createTeam } from '../services/teamService';
 import { getUsers } from '../services/userService';
+import { getAuthErrorMessage } from '../services/authService';
 import type { Team, User } from '../types';
 
 export default function Teams() {
@@ -41,8 +42,8 @@ export default function Teams() {
       await createTeam(newTeamName.trim());
       setNewTeamName('');
       await load();
-    } catch {
-      setFormError('Could not create the team. Try again.');
+    } catch (err) {
+      setFormError(getAuthErrorMessage(err, 'Could not create the team. Try again.'));
     } finally {
       setSubmitting(false);
     }

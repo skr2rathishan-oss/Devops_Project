@@ -5,12 +5,12 @@ const { toTask } = require("../utils/serializers");
 const { parseId, parseOptionalId, parseOptionalDate } = require("../utils/validators");
 
 // Match the ENUMs in database/init.sql and the client's TaskStatus / TaskPriority types.
-const TASK_STATUSES = ["pending", "in_progress", "completed"];
+const TASK_STATUSES = ["pending", "in_progress", "review", "completed"];
 const TASK_PRIORITIES = ["low", "medium", "high"];
 const MAX_TITLE_LENGTH = 200;
 // Well under the TEXT column's 65,535-byte limit even with 4-byte utf8mb4 characters.
 const MAX_DESCRIPTION_LENGTH = 5000;
-const STATUS_MESSAGE = "Status must be pending, in_progress or completed";
+const STATUS_MESSAGE = "Status must be pending, in_progress, review or completed";
 
 const CREATE_DEFAULTS = {
   title: "",

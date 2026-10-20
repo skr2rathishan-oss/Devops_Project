@@ -11,16 +11,35 @@ const USERNAME_PATTERN = /^[A-Za-z0-9_.-]{3,50}$/;
 // Admins can't self-register; they are created by another admin or seeded.
 const SELF_REGISTER_ROLES = ["team_member", "team_leader"];
 
+// Express 5 leaves req.body undefined when no JSON body is sent, and fields can be any JSON type.
+function readString(body, key) {
+  const value = body?.[key];
+  return typeof value === "string" ? value : "";
+}
+
+function assertPasswordLength(password) {
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    throw new AppError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`, 400);
+  }
+}
+
 async function register(req, res, next) {
   try {
-    const name = req.body.name?.trim();
-    const username = req.body.username?.trim();
-    const email = req.body.email?.trim().toLowerCase();
-    const { password } = req.body;
-    const role = req.body.role || "team_member";
+    const name = readString(req.body, "name").trim();
+    const username = readString(req.body, "username").trim();
+    const email = readString(req.body, "email").trim().toLowerCase();
+    const password = readString(req.body, "password");
+    const role = req.body?.role || "team_member";
 
     if (!name || !username || !email || !password) {
       throw new AppError("name, username, email and password are required", 400);
+    }
+    // Match the VARCHAR sizes in database/init.sql so MySQL never rejects the insert.
+    if (name.length > 100) {
+      throw new AppError("Name must be at most 100 characters", 400);
+    }
+    if (email.length > 255) {
+      throw new AppError("Email must be at most 255 characters", 400);
     }
     if (!USERNAME_PATTERN.test(username)) {
       throw new AppError("User ID must be 3-50 characters: letters, numbers, _ . -", 400);
@@ -28,9 +47,7 @@ async function register(req, res, next) {
     if (!EMAIL_PATTERN.test(email)) {
       throw new AppError("Please enter a valid email address", 400);
     }
-    if (password.length < MIN_PASSWORD_LENGTH) {
-      throw new AppError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`, 400);
-    }
+    assertPasswordLength(password);
     if (!SELF_REGISTER_ROLES.includes(role)) {
       throw new AppError("Role must be team_member or team_leader", 400);
     }
@@ -64,8 +81,8 @@ async function register(req, res, next) {
 async function login(req, res, next) {
   try {
     // `identifier` is the email or username; `email` is still accepted for older clients.
-    const identifier = (req.body.identifier ?? req.body.email)?.trim();
-    const { password } = req.body;
+    const identifier = (readString(req.body, "identifier") || readString(req.body, "email")).trim();
+    const password = readString(req.body, "password");
     if (!identifier || !password) {
       throw new AppError("Email or User ID and password are required", 400);
     }
@@ -89,7 +106,8 @@ async function login(req, res, next) {
 
 async function forgotPassword(req, res, next) {
   try {
-    const { email } = req.body;
+    // Stored emails are lowercased at registration.
+    const email = readString(req.body, "email").trim().toLowerCase();
     if (!email) {
       throw new AppError("email is required", 400);
     }
@@ -101,10 +119,15 @@ async function forgotPassword(req, res, next) {
       const expiresMinutes = Number(process.env.RESET_TOKEN_EXPIRES_MINUTES) || 30;
       const expiresAt = new Date(Date.now() + expiresMinutes * 60 * 1000);
 
-      await userModel.setResetToken(email, tokenHash, expiresAt);
+      await userModel.setResetToken(user.email, tokenHash, expiresAt);
 
       const resetUrl = `${process.env.CLIENT_URL}/reset-password/${rawToken}`;
-      await sendResetPasswordEmail(email, resetUrl);
+      try {
+        await sendResetPasswordEmail(user.email, resetUrl);
+      } catch (err) {
+        // A 500 here only for existing accounts would reveal which emails are registered.
+        console.error("Failed to send password reset email:", err);
+      }
     }
 
     res.status(200).json({
@@ -119,10 +142,11 @@ async function forgotPassword(req, res, next) {
 async function resetPassword(req, res, next) {
   try {
     const { token } = req.params;
-    const { password } = req.body;
+    const password = readString(req.body, "password");
     if (!token || !password) {
       throw new AppError("token and password are required", 400);
     }
+    assertPasswordLength(password);
 
     const tokenHash = hashResetToken(token);
     const user = await userModel.findByResetTokenHash(tokenHash);

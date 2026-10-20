@@ -1,4 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import "./AuthLayout.css";
 
 // Import your team photograph
 import teamPhoto from "../assets/teamPhoto.png";

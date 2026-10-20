@@ -8,7 +8,7 @@ const TASK_SELECT = `
   SELECT t.id, t.title, t.description, t.status, t.priority,
          t.assigned_to, a.name AS assigned_to_name, a.team_id AS assigned_team_id,
          t.created_by, c.team_id AS creator_team_id,
-         DATE_FORMAT(t.due_date, '%Y-%m-%d') AS due_date, t.created_at
+         DATE_FORMAT(t.due_date, '%Y-%m-%d') AS due_date, t.created_at, t.updated_at
   FROM tasks t
   LEFT JOIN users a ON a.id = t.assigned_to
   LEFT JOIN users c ON c.id = t.created_by`;

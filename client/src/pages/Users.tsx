@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import Layout from '../components/Layout';
-import { getUsers, createUser } from '../services/userService';
+import { getUsers, createUser, updateUser } from '../services/userService';
+import type { UpdateUserValues } from '../services/userService';
 import { getTeams } from '../services/teamService';
+import { getAuthErrorMessage } from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 import type { User, Team, Role } from '../types';
 
 const ROLE_OPTIONS: { value: Role; label: string }[] = [
@@ -18,6 +21,23 @@ export default function Users() {
   const [showForm, setShowForm] = useState(false);
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const { user: currentUser } = useAuth();
+  const [savingId, setSavingId] = useState<number | null>(null);
+  const [rowError, setRowError] = useState('');
+
+  // Saves a role or team change straight away and shows the server's copy of the user.
+  async function handleUpdate(target: User, values: UpdateUserValues) {
+    setSavingId(target.id);
+    setRowError('');
+    try {
+      const saved = await updateUser(target.id, values);
+      setUsers((prev) => prev.map((u) => (u.id === saved.id ? saved : u)));
+    } catch (err) {
+      setRowError(getAuthErrorMessage(err, `Could not update ${target.name}. Try again.`));
+    } finally {
+      setSavingId(null);
+    }
+  }
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -63,8 +83,8 @@ export default function Users() {
       resetForm();
       setShowForm(false);
       await load();
-    } catch {
-      setFormError('Could not create the user. Check the details and try again.');
+    } catch (err) {
+      setFormError(getAuthErrorMessage(err, 'Could not create the user. Check the details and try again.'));
     } finally {
       setSubmitting(false);
     }
@@ -124,6 +144,8 @@ export default function Users() {
       {status === 'loading' && <p className="page-state">Loading users…</p>}
       {status === 'error' && <p className="page-state page-state--error">Could not load users. Try refreshing.</p>}
 
+      {status === 'ready' && rowError && <p className="form-error" role="alert">{rowError}</p>}
+
       {status === 'ready' && (
         <table className="data-table">
           <thead>
@@ -139,8 +161,34 @@ export default function Users() {
               <tr key={u.id}>
                 <td>{u.name}</td>
                 <td>{u.email}</td>
-                <td>{ROLE_OPTIONS.find((r) => r.value === u.role)?.label}</td>
-                <td>{teams.find((t) => t.id === u.teamId)?.name ?? '—'}</td>
+                <td>
+                  <select
+                    className="input"
+                    aria-label={`Role of ${u.name}`}
+                    value={u.role}
+                    // Admins can't demote themselves (the server refuses it too).
+                    disabled={savingId === u.id || u.id === currentUser?.id}
+                    onChange={(e) => void handleUpdate(u, { role: e.target.value as Role })}
+                  >
+                    {ROLE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </td>
+                <td>
+                  <select
+                    className="input"
+                    aria-label={`Team of ${u.name}`}
+                    value={u.teamId ?? ''}
+                    disabled={savingId === u.id}
+                    onChange={(e) => void handleUpdate(u, { teamId: e.target.value ? Number(e.target.value) : '' })}
+                  >
+                    <option value="">No team</option>
+                    {teams.map((t) => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
