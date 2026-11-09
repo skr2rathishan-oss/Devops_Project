@@ -46,4 +46,24 @@ async function createTeam(req, res, next) {
   }
 }
 
-module.exports = { getTeams, createTeam };
+async function getMyTeam(req, res, next) {
+  try {
+    const teamId = req.user.team_id;
+
+    if (teamId == null) {
+      return res.json({ team: null, members: [] });
+    }
+
+    const team = await teamModel.findById(teamId);
+    if (!team) {
+      return res.json({ team: null, members: [] });
+    }
+
+    const members = await teamModel.findMembers(teamId);
+    return res.json({ team: toTeam(team), members });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getTeams, createTeam, getMyTeam };

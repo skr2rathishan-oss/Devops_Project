@@ -20,4 +20,12 @@ async function create(name) {
   return findById(result.insertId);
 }
 
-module.exports = { findAll, findById, findByName, create };
+async function findMembers(teamId) {
+  const [rows] = await pool.query(
+    "SELECT id, name, username, role FROM users WHERE team_id = ? ORDER BY name, id",
+    [teamId]
+  );
+  return rows;
+}
+
+module.exports = { findAll, findById, findByName, create, findMembers };
