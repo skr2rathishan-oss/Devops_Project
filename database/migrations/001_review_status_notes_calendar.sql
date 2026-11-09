@@ -1,9 +1,9 @@
 -- Brings a database created from an older init.sql up to date.
 -- New databases get all of this from init.sql; this is only for existing ones.
 -- Safe to run more than once. Run after init.sql, e.g.:
---   mysql -u app_user -p app_db < database/migrations/001_review_status_notes_calendar.sql
-
-USE app_db;
+-- In MySQL Workbench, select the database configured in server/.env before running this migration.
+-- From the command line, pass that database name explicitly, for example:
+--   mysql -u app_user -p taksmanagement < database/migrations/001_review_status_notes_calendar.sql
 
 SET NAMES utf8mb4;
 
