@@ -35,12 +35,6 @@ function Sidebar() {
   const isAdmin = user?.role === 'admin';
   const isManager = isAdmin || user?.role === 'team_leader';
 
-  // "Team": admins manage every team; everyone else sees their own team's board.
-  function openTeam() {
-    if (isAdmin) navigate('/teams');
-    else if (user?.teamId) navigate(`/dashboard?team=${user.teamId}`);
-  }
-
   function toggleLink(key: string, value: string, active: boolean) {
     return dashboardHref(params, key, active ? null : value);
   }
@@ -63,15 +57,10 @@ function Sidebar() {
           Calendar
         </NavLink>
 
-        <button
-          className={`menu-item${pathname === '/teams' ? ' active' : ''}`}
-          onClick={openTeam}
-          disabled={!isAdmin && !user?.teamId}
-          title={!isAdmin && !user?.teamId ? 'You are not in a team yet' : undefined}
-        >
+        <NavLink to={isAdmin ? '/teams' : '/my-team'} className={menuClass}>
           <span>♟</span>
           Team
-        </button>
+        </NavLink>
 
         {isManager && (
           <NavLink to="/tasks" className={menuClass}>

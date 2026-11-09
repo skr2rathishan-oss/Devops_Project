@@ -13,6 +13,7 @@ import Dashboard from "../pages/Dashboard";
 import Calendar from "../pages/Calendar";
 import Tasks from "../pages/Tasks";
 import MyTasks from "../pages/MyTasks";
+import MyTeam from "../pages/MyTeam";
 import Users from "../pages/Users";
 import Teams from "../pages/Teams";
 
@@ -126,6 +127,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <Users />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-team"
+        element={
+          <ProtectedRoute>
+            <MyTeam />
           </ProtectedRoute>
         }
       />
