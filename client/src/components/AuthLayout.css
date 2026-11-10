@@ -3,6 +3,8 @@
    can't restyle these pages, and these rules can't leak into the dashboard. */
 
 .auth-shell {
+  --auth-accent: #b4470b;
+  --auth-accent-hover: #953607;
   display: flex;
   min-height: 100vh;
   width: 100%;
@@ -125,7 +127,7 @@
 
 .auth-shell .progress-track {
   height: 10px;
-  background: #f0e7f1;
+  background: #fce7d6;
   border-radius: 20px;
   overflow: hidden;
 }
@@ -133,7 +135,7 @@
 .auth-shell .progress-fill {
   width: 75%;
   height: 100%;
-  background: #d96ca8;
+  background: #e7782b;
   border-radius: 20px;
 }
 
@@ -191,9 +193,9 @@
 }
 
 .auth-shell .auth-nav button.active {
-  color: #ca579b;
+  color: var(--auth-accent);
   font-weight: bold;
-  border-bottom: 2px solid #ca579b;
+  border-bottom: 2px solid var(--auth-accent);
 }
 
 .auth-shell .form-container {
@@ -204,7 +206,7 @@
 }
 
 .auth-shell .eyebrow {
-  color: #c65a9d;
+  color: var(--auth-accent);
   font-size: 12px;
   font-weight: bold;
   letter-spacing: 2px;
@@ -258,13 +260,13 @@
   border: none;
   border-radius: 9px;
   color: white;
-  background: #cf65a6;
+  background: var(--auth-accent);
   font-weight: bold;
   transition: background 0.2s ease;
 }
 
 .auth-shell .primary-button:hover:not(:disabled) {
-  background: #b74b8d;
+  background: var(--auth-accent-hover);
 }
 
 .auth-shell .primary-button:disabled {
@@ -290,7 +292,7 @@
   border: none;
   background: transparent;
   padding: 0;
-  color: #c45799;
+  color: var(--auth-accent);
   font-weight: bold;
 }
 
