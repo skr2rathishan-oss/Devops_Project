@@ -47,19 +47,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
-            steps {
-                sh '''
-                    docker compose \
-                      --project-directory "$DEPLOY_DIR" \
-                      --env-file "$DEPLOY_DIR/.env" \
-                      -f docker-compose.yml \
-                      build
-                '''
-            }
-        }
-
-        stage('Deploy') {
+        stage('Sync Deployment Directory') {
             steps {
                 sh '''
                     set -e
@@ -73,8 +61,24 @@ pipeline {
 
                     git fetch origin main
                     git merge --ff-only "$GIT_COMMIT"
+                '''
+            }
+        }
 
-                    docker compose up -d --build
+        stage('Build Docker Images') {
+            steps {
+                sh '''
+                    cd "$DEPLOY_DIR"
+                    docker compose build
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    cd "$DEPLOY_DIR"
+                    docker compose up -d
                 '''
             }
         }
