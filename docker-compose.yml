@@ -24,6 +24,7 @@ services:
 
 
   server:
+    image: taskmanager-server:latest
     build: ./server
     restart: unless-stopped
     init: true
@@ -60,6 +61,7 @@ services:
 
 
   client:
+    image: taskmanager-client:latest
     build:
       context: ./client
       args:
