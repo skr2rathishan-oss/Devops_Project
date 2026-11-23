@@ -1,10 +1,14 @@
 
 pipeline {
-    agent { label 'rootless-docker' }
+    agent { label 'rootless-user-agent' }
 
     options {
-        timestamps()
+        skipDefaultCheckout(true)
         disableConcurrentBuilds()
+    }
+
+    environment {
+        DEPLOY_DIR = '/home/user/taskmanagement/Devops_Project'
     }
 
     stages {
@@ -14,64 +18,40 @@ pipeline {
             }
         }
 
-        stage('Verify Rootless Docker') {
+        stage('Verify Docker') {
+            steps {
+                sh 'docker info > /dev/null'
+                sh 'docker compose version'
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh 'docker compose build'
+            }
+        }
+
+        stage('Deploy') {
             steps {
                 sh '''
-                    echo "Checking Jenkins agent..."
-                    whoami
-                    echo "Docker context:"
-                    docker context show
-                    echo "Docker information:"
-                    docker info
-                    echo "Checking Node.js container..."
-                    docker run --rm node:22-alpine node --version
+                    set -e
+                    cd "$DEPLOY_DIR"
+
+                    test -z "$(git status --porcelain)"
+
+                    git fetch origin main
+                    git merge --ff-only "$GIT_COMMIT"
+
+                    docker compose up -d --build
                 '''
             }
         }
 
-        stage('Frontend Build and Test') {
+        stage('Verify Deployment') {
             steps {
                 sh '''
-                    docker run --rm \
-                      -v "$WORKSPACE:/app" \
-                      -w /app/client \
-                      node:22-alpine sh -c \
-                      "npm ci && npm run lint && npm run build"
-                '''
-            }
-        }
-
-        stage('Backend Validation') {
-            steps {
-                sh '''
-                    docker run --rm \
-                      -v "$WORKSPACE:/app" \
-                      -w /app/server \
-                      node:22-alpine sh -c \
-                      "npm ci && node --check server.js"
-                '''
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                sh '''
-                    echo "Building frontend Docker image..."
-                    docker build -t taskmanager-client:ci ./client
-
-                    echo "Building backend Docker image..."
-                    docker build -t taskmanager-server:ci ./server
-                '''
-            }
-        }
-
-        stage('Verify Docker Images') {
-            steps {
-                sh '''
-                    docker image inspect taskmanager-client:ci > /dev/null
-                    docker image inspect taskmanager-server:ci > /dev/null
-
-                    echo "Both Docker images built successfully!"
+                    cd "$DEPLOY_DIR"
+                    docker compose ps
                 '''
             }
         }
@@ -79,15 +59,10 @@ pipeline {
 
     post {
         success {
-            echo 'CI Pipeline SUCCESS!'
+            echo 'Task Manager pipeline completed!'
         }
-
         failure {
-            echo 'CI Pipeline FAILED!'
-        }
-
-        always {
-            echo 'Pipeline execution completed.'
+            echo 'Task Manager pipeline failed.'
         }
     }
 }
