@@ -11,6 +11,7 @@ pipeline {
 
     environment {
         DEPLOY_DIR = '/home/user/taskmanagement/Devops_Project'
+        DOCKER_HOST = 'unix:///run/user/1001/docker.sock'
     }
 
     stages {
@@ -24,11 +25,21 @@ pipeline {
         stage('Verify Docker') {
             steps {
                 sh '''
-                    set -e
+                    set -eu
+
+                    echo "Checking Jenkins user..."
+                    whoami
+                    id
+
+                    echo "Checking rootless Docker socket..."
+                    echo "$DOCKER_HOST"
+                    test -S /run/user/1001/docker.sock
 
                     docker --version
                     docker compose version
                     docker info > /dev/null
+
+                    echo "Docker connection successful"
                 '''
             }
         }
@@ -36,7 +47,7 @@ pipeline {
         stage('Verify Environment') {
             steps {
                 sh '''
-                    set -e
+                    set -eu
 
                     test -f "$DEPLOY_DIR/.env" || {
                         echo "Deployment .env file missing"
@@ -48,6 +59,8 @@ pipeline {
                     docker compose \
                         --env-file "$DEPLOY_DIR/.env" \
                         config --quiet
+
+                    echo "Environment verified"
                 '''
             }
         }
@@ -55,7 +68,7 @@ pipeline {
         stage('Sync Deployment Directory') {
             steps {
                 sh '''
-                    set -e
+                    set -eu
 
                     cd "$DEPLOY_DIR"
 
@@ -66,6 +79,8 @@ pipeline {
 
                     git fetch origin main
                     git merge --ff-only "$GIT_COMMIT"
+
+                    echo "Deployment directory synchronized"
                 '''
             }
         }
@@ -73,13 +88,15 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 sh '''
-                    set -e
+                    set -eu
 
                     cd "$DEPLOY_DIR"
 
                     docker compose \
                         --env-file "$DEPLOY_DIR/.env" \
-                        build
+                        build client server
+
+                    echo "Docker images built successfully"
                 '''
             }
         }
@@ -97,23 +114,26 @@ pipeline {
                         set -eu
                         set +x
 
+                        cd "$DEPLOY_DIR"
+
+                        # Use an isolated Docker authentication config
                         export DOCKER_CONFIG="$(mktemp -d)"
                         trap 'rm -rf "$DOCKER_CONFIG"' EXIT
 
-                        cd "$DEPLOY_DIR"
-
-                        # Login to Docker Hub
+                        # Log in to Docker Hub
                         printf '%s' "$DOCKER_TOKEN" |
                             docker login \
                                 -u "$DOCKER_USER" \
                                 --password-stdin
 
                         # Tag frontend image
-                        docker tag taskmanager-client:latest \
+                        docker tag \
+                            taskmanager-client:latest \
                             "$DOCKER_USER/taskmanager-client:latest"
 
                         # Tag backend image
-                        docker tag taskmanager-server:latest \
+                        docker tag \
+                            taskmanager-server:latest \
                             "$DOCKER_USER/taskmanager-server:latest"
 
                         # Push frontend image
@@ -124,7 +144,7 @@ pipeline {
                         docker push \
                             "$DOCKER_USER/taskmanager-server:latest"
 
-                        echo "Docker images pushed successfully!"
+                        echo "Docker Hub images pushed successfully"
                     '''
                 }
             }
@@ -133,13 +153,15 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    set -e
+                    set -eu
 
                     cd "$DEPLOY_DIR"
 
                     docker compose \
                         --env-file "$DEPLOY_DIR/.env" \
                         up -d --no-build
+
+                    echo "Deployment completed"
                 '''
             }
         }
@@ -147,7 +169,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 sh '''
-                    set -e
+                    set -eu
 
                     cd "$DEPLOY_DIR"
 
@@ -158,6 +180,8 @@ pipeline {
                     docker compose \
                         --env-file "$DEPLOY_DIR/.env" \
                         ps --status running
+
+                    echo "Deployment verification completed"
                 '''
             }
         }
@@ -169,7 +193,7 @@ pipeline {
         }
 
         failure {
-            echo 'Task Manager pipeline failed. Check Jenkins console output.'
+            echo 'Task Manager CI/CD pipeline failed. Check Jenkins console output.'
         }
     }
 }
