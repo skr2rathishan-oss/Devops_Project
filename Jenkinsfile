@@ -1,9 +1,11 @@
 
 pipeline {
-    agent { label 'rootless-user-agent' }
+    agent {
+        label 'rootless-user-agent'
+    }
 
     options {
-        skipDefaultCheckout(true)
+        timestamps()
         disableConcurrentBuilds()
     }
 
@@ -20,14 +22,40 @@ pipeline {
 
         stage('Verify Docker') {
             steps {
-                sh 'docker info > /dev/null'
-                sh 'docker compose version'
+                sh '''
+                    docker --version
+                    docker compose version
+                    docker info > /dev/null
+                '''
+            }
+        }
+
+        stage('Verify Environment') {
+            steps {
+                sh '''
+                    test -f "$DEPLOY_DIR/.env" || {
+                        echo "Deployment .env file missing"
+                        exit 1
+                    }
+
+                    docker compose \
+                      --project-directory "$DEPLOY_DIR" \
+                      --env-file "$DEPLOY_DIR/.env" \
+                      -f docker-compose.yml \
+                      config --quiet
+                '''
             }
         }
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker compose build'
+                sh '''
+                    docker compose \
+                      --project-directory "$DEPLOY_DIR" \
+                      --env-file "$DEPLOY_DIR/.env" \
+                      -f docker-compose.yml \
+                      build
+                '''
             }
         }
 
@@ -35,9 +63,13 @@ pipeline {
             steps {
                 sh '''
                     set -e
+
                     cd "$DEPLOY_DIR"
 
-                    test -z "$(git status --porcelain)"
+                    test -z "$(git status --porcelain)" || {
+                        echo "Deployment directory has local changes"
+                        exit 1
+                    }
 
                     git fetch origin main
                     git merge --ff-only "$GIT_COMMIT"
@@ -59,10 +91,11 @@ pipeline {
 
     post {
         success {
-            echo 'Task Manager pipeline completed!'
+            echo 'Task Manager pipeline completed successfully!'
         }
+
         failure {
-            echo 'Task Manager pipeline failed.'
+            echo 'Task Manager pipeline failed. Check console output.'
         }
     }
 }
